@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
+import { SOCIALS } from "../lib/socials";
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -53,21 +54,45 @@ const posts = [
   },
 ];
 
+const socialCards = [
+  { href: SOCIALS.linkedin, label: "LinkedIn", handle: "md-tazbid-sikder", Icon: Linkedin },
+  { href: SOCIALS.facebook, label: "Facebook", handle: "Md. Tazbid Sikder", Icon: Facebook },
+  { href: SOCIALS.instagram, label: "Instagram", handle: "@md.tazbid", Icon: Instagram },
+];
+
 function Blog() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <FadeIn>
-        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-          Notes & stories
-        </p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+        <h1 className="font-display text-4xl font-medium tracking-tight text-foreground md:text-5xl">
           Blog
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          Thoughts on engineering, photography, and everything in between. Links open on LinkedIn or
-          Facebook.
+          Thoughts on engineering, photography, and everything in between. Posts live on
+          LinkedIn, Facebook, and Instagram.
         </p>
       </FadeIn>
+
+      <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {socialCards.map(({ href, label, handle, Icon }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-between rounded-xl border border-border bg-card px-5 py-4 transition-colors hover:border-foreground/30 hover:bg-accent"
+          >
+            <div className="flex items-center gap-3">
+              <Icon className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium text-foreground">{label}</p>
+                <p className="text-xs text-muted-foreground">{handle}</p>
+              </div>
+            </div>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+          </a>
+        ))}
+      </div>
 
       <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
         {posts.map((post, index) => (
