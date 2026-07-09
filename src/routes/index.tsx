@@ -1,133 +1,157 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Camera, Cpu, FlaskConical, PenTool, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
-import heroImage from "../assets/hero.jpg";
+import portraitAsset from "../assets/portrait.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Overview — Portfolio" },
+      { title: "Hello — ETE Student & Photographer, CUET" },
       {
         name: "description",
         content:
-          "Overview of a creative portfolio blending electronics engineering and photography.",
+          "Portfolio of an Electronics & Telecommunication Engineering student at CUET, and a passionate photographer.",
       },
-      { property: "og:title", content: "Overview — Portfolio" },
+      { property: "og:title", content: "Hello — ETE Student & Photographer, CUET" },
       {
         property: "og:description",
         content:
-          "Overview of a creative portfolio blending electronics engineering and photography.",
+          "Portfolio of an Electronics & Telecommunication Engineering student at CUET, and a passionate photographer.",
       },
+      { property: "og:image", content: portraitAsset.url },
+      { name: "twitter:image", content: portraitAsset.url },
     ],
   }),
   component: Index,
 });
 
 const sections = [
-  {
-    to: "/photography",
-    label: "Photography",
-    description: "Light, shadow, and stories captured through the lens.",
-    icon: Camera,
-  },
-  {
-    to: "/skills",
-    label: "Skills",
-    description: "Engineering foundations, code, and creative tools.",
-    icon: Cpu,
-  },
-  {
-    to: "/labs",
-    label: "Labs",
-    description: "Sessional work in electronics and communication labs.",
-    icon: FlaskConical,
-  },
-  {
-    to: "/blog",
-    label: "Blog",
-    description: "Notes, thoughts, and experiments worth sharing.",
-    icon: PenTool,
-  },
-];
+  { to: "/photography", label: "Photography", meta: "01 — Frames & stories" },
+  { to: "/skills", label: "Skills", meta: "02 — Hardware & code" },
+  { to: "/labs", label: "Labs", meta: "03 — Sessional work" },
+  { to: "/blog", label: "Blog", meta: "04 — Notes & writing" },
+] as const;
 
 function Index() {
   return (
     <div className="relative">
-      {/* Hero */}
-      <section className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl grid-cols-1 items-center gap-12 px-6 py-12 md:grid-cols-2">
-        <FadeIn className="order-2 md:order-1">
-          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-            Electronics & Telecommunication
-          </p>
-          <h1 className="font-display text-5xl font-semibold leading-[1.1] tracking-tight text-foreground md:text-6xl lg:text-7xl">
-            Engineering mind. Creative eye.
-          </h1>
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-muted-foreground">
-            I’m a student at CUET studying Electronics and Telecommunication Engineering, with
-            photography as my passionate hobby. This space is where circuits meet composition.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              to="/photography"
-              className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:scale-105"
-            >
-              See my work
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              to="/skills"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-6 py-3 text-sm font-medium text-secondary-foreground transition-colors hover:bg-accent"
-            >
-              Explore skills
-            </Link>
-          </div>
-        </FadeIn>
+      {/* HERO */}
+      <section className="relative mx-auto max-w-[1400px] px-6 pb-24 pt-8 md:px-12">
+        {/* Vertical side label */}
+        <div className="pointer-events-none absolute left-3 top-24 hidden select-none md:block">
+          <span className="block origin-top-left -rotate-90 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+            Photographer / ETE Student
+          </span>
+        </div>
+        <div className="pointer-events-none absolute bottom-8 right-3 hidden select-none md:block">
+          <span className="block origin-bottom-right rotate-90 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+            2026 — Portfolio
+          </span>
+        </div>
 
-        <FadeIn delay={0.15} direction="left" className="order-1 md:order-2">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted md:aspect-[3/4]">
-            <img
-              src={heroImage}
-              alt="Featured photography"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
+          {/* Left column */}
+          <div className="order-2 flex flex-col justify-between md:order-1 md:col-span-7">
+            {/* Stats */}
+            <FadeIn>
+              <div className="flex items-start gap-10 border-b border-border pb-6">
+                <Stat sup="+" value="200" label="Frames captured" />
+                <Stat sup="+" value="12" label="Lab projects" />
+                <Stat sup="" value="B.Sc" label="ETE, CUET" />
+              </div>
+            </FadeIn>
+
+            {/* Big Hello */}
+            <FadeIn delay={0.1}>
+              <div className="mt-10 md:mt-16">
+                <h1 className="font-display font-medium leading-[0.85] tracking-[-0.04em] text-foreground [font-size:clamp(5rem,14vw,12rem)]">
+                  Hello
+                </h1>
+                <p className="mt-6 max-w-md text-base text-muted-foreground md:text-lg">
+                  <span className="mr-2 text-foreground">—</span>
+                  I&apos;m an Electronics &amp; Telecommunication Engineering student at CUET,
+                  and a photographer chasing quiet frames.
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Bottom row */}
+            <FadeIn delay={0.2}>
+              <div className="mt-12 flex items-center justify-between border-t border-border pt-6 md:mt-24">
+                <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                  2026
+                </span>
+                <a
+                  href="#explore"
+                  className="group inline-flex items-center gap-2 text-sm font-medium text-foreground"
+                >
+                  Scroll down
+                  <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-1" />
+                </a>
+              </div>
+            </FadeIn>
           </div>
-        </FadeIn>
+
+          {/* Right column — portrait */}
+          <FadeIn direction="left" delay={0.15} className="order-1 md:order-2 md:col-span-5">
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+              <img
+                src={portraitAsset.url}
+                alt="Self portrait holding a Yashica film camera"
+                className="h-full w-full object-cover grayscale contrast-[1.05]"
+              />
+              <div className="absolute left-4 top-4 text-[10px] font-medium uppercase tracking-[0.3em] text-white/80 mix-blend-difference">
+                / 01
+              </div>
+              <div className="absolute bottom-4 right-4 text-[10px] font-medium uppercase tracking-[0.3em] text-white/80 mix-blend-difference">
+                Yashica · 38mm
+              </div>
+            </div>
+          </FadeIn>
+        </div>
       </section>
 
-      {/* Section tabs */}
-      <section className="mx-auto max-w-6xl px-6 pb-24">
+      {/* EXPLORE */}
+      <section id="explore" className="mx-auto max-w-[1400px] px-6 pb-32 md:px-12">
         <FadeIn>
-          <h2 className="font-display text-3xl font-medium tracking-tight text-foreground md:text-4xl">
-            Explore
-          </h2>
-          <p className="mt-3 max-w-xl text-muted-foreground">
-            Jump into any section to see what I’m working on, learning, and capturing.
-          </p>
+          <div className="flex items-end justify-between border-b border-border pb-6">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                Index
+              </p>
+              <h2 className="mt-2 font-display text-4xl font-medium tracking-tight text-foreground md:text-6xl">
+                Explore
+              </h2>
+            </div>
+            <p className="hidden max-w-xs text-sm text-muted-foreground md:block">
+              Four rooms. Circuits, lenses, sessional benchwork, and words.
+            </p>
+          </div>
         </FadeIn>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {sections.map((section, index) => (
-            <FadeIn key={section.to} delay={0.1 + index * 0.08}>
-              <Link to={section.to}>
+        <div className="divide-y divide-border">
+          {sections.map((s, i) => (
+            <FadeIn key={s.to} delay={0.05 + i * 0.05}>
+              <Link to={s.to} className="group block">
                 <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}
-                  className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 transition-colors hover:border-foreground/20 hover:bg-accent"
+                  whileHover={{ x: 8 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-center justify-between py-8 md:py-10"
                 >
-                  <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
-                    <section.icon className="h-5 w-5" />
+                  <div className="flex items-baseline gap-6 md:gap-10">
+                    <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                      0{i + 1}
+                    </span>
+                    <h3 className="font-display text-3xl font-medium tracking-tight text-foreground md:text-5xl">
+                      {s.label}
+                    </h3>
                   </div>
-                  <h3 className="font-display text-lg font-medium text-card-foreground">
-                    {section.label}
-                  </h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
-                    {section.description}
-                  </p>
-                  <div className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-foreground">
-                    Open
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  <div className="flex items-center gap-4">
+                    <span className="hidden text-xs uppercase tracking-[0.2em] text-muted-foreground md:inline">
+                      {s.meta}
+                    </span>
+                    <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:h-6 md:w-6" />
                   </div>
                 </motion.div>
               </Link>
@@ -135,6 +159,24 @@ function Index() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+function Stat({ sup, value, label }: { sup: string; value: string; label: string }) {
+  return (
+    <div className="flex flex-col">
+      <div className="flex items-start">
+        {sup && (
+          <span className="mt-2 text-lg font-medium text-foreground md:text-2xl">{sup}</span>
+        )}
+        <span className="font-display text-3xl font-medium leading-none tracking-tight text-foreground md:text-5xl">
+          {value}
+        </span>
+      </div>
+      <span className="mt-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        {label}
+      </span>
     </div>
   );
 }
