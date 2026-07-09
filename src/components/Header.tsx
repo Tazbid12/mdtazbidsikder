@@ -19,8 +19,8 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="font-display text-xl font-semibold tracking-tight text-foreground">
-          Portfolio
+        <Link to="/" className="font-display text-lg font-medium tracking-tight text-foreground">
+          Md. Tazbid Sikder
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">

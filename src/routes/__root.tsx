@@ -92,22 +92,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Portfolio — Electronics & Photography" },
+      { title: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
       {
         name: "description",
         content:
-          "A minimal creative portfolio by an Electronics and Telecommunication Engineering student and photographer.",
+          "Portfolio of Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET, and a photographer.",
       },
-      { name: "author", content: "Portfolio" },
-      { property: "og:title", content: "Portfolio — Electronics & Photography" },
+      { name: "author", content: "Md. Tazbid Sikder" },
+      { property: "og:title", content: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
       {
         property: "og:description",
         content:
-          "A minimal creative portfolio by an Electronics and Telecommunication Engineering student and photographer.",
+          "Portfolio of Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET, and a photographer.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Portfolio" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
