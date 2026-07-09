@@ -37,7 +37,72 @@ function Index() {
   return (
     <div className="relative">
       {/* HERO */}
-      <section className="relative mx-auto max-w-[1400px] px-6 pb-24 pt-8 md:px-12">
+      {/* MOBILE HERO — fullscreen portrait with intro overlay */}
+      <section className="relative md:hidden">
+        <div className="relative h-[100svh] w-full overflow-hidden bg-black">
+          <img
+            src={portraitAsset.url}
+            alt="Self portrait holding a Yashica film camera"
+            className="absolute inset-0 h-full w-full object-cover grayscale contrast-[1.05]"
+          />
+          {/* gradient for legibility */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/85" />
+
+          {/* top meta */}
+          <div className="absolute inset-x-0 top-0 flex items-center justify-between px-6 pt-20 text-[10px] font-medium uppercase tracking-[0.3em] text-white/80">
+            <span>/ 01 — Hello</span>
+            <span>2026</span>
+          </div>
+
+          {/* rotated side label */}
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 origin-left -rotate-90 whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.3em] text-white/70">
+            Photographer / ETE Student
+          </span>
+
+          {/* bottom content */}
+          <div className="absolute inset-x-0 bottom-0 px-6 pb-10">
+            <FadeIn>
+              <h1 className="font-display font-medium leading-[0.85] tracking-[-0.04em] text-white [font-size:clamp(4.5rem,26vw,8rem)]">
+                Hello
+              </h1>
+            </FadeIn>
+            <FadeIn delay={0.1}>
+              <p className="mt-5 max-w-[22rem] text-sm leading-relaxed text-white/85">
+                <span className="mr-2 text-white">—</span>
+                I&apos;m an Electronics &amp; Telecommunication Engineering student at CUET,
+                and a photographer chasing quiet frames.
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.2}>
+              <div className="mt-6 flex items-center justify-between border-t border-white/20 pt-4">
+                <div className="flex items-center gap-6 text-white">
+                  <div className="flex flex-col">
+                    <div className="flex items-start">
+                      <span className="mt-1 text-xs font-medium">+</span>
+                      <span className="font-display text-2xl font-medium leading-none tracking-tight">200</span>
+                    </div>
+                    <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">Frames</span>
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-start">
+                      <span className="mt-1 text-xs font-medium">+</span>
+                      <span className="font-display text-2xl font-medium leading-none tracking-tight">12</span>
+                    </div>
+                    <span className="mt-1 text-[9px] font-medium uppercase tracking-[0.2em] text-white/60">Labs</span>
+                  </div>
+                </div>
+                <a href="#explore" className="inline-flex items-center gap-2 text-xs font-medium text-white">
+                  Scroll
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* HERO (desktop / tablet) */}
+      <section className="relative mx-auto hidden max-w-[1400px] px-6 pb-24 pt-8 md:block md:px-12">
         {/* Vertical side label */}
         <div className="pointer-events-none absolute left-3 top-24 hidden select-none md:block">
           <span className="block origin-top-left -rotate-90 whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
@@ -49,6 +114,7 @@ function Index() {
             2026 — Portfolio
           </span>
         </div>
+
 
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
           {/* Left column */}
