@@ -1,58 +1,50 @@
-# Aeonik-style portfolio redesign
+## Changes
 
-Adopting the reference vibe: oversized neo-grotesk display type, tight monochrome palette, big editorial hero portrait, thin dividing rules, vertical side-labels, and a small "Scroll down" cue. Using your uploaded self-portrait as the hero image.
+### 1. Add social links
 
-## Visual direction (locked)
+- LinkedIn: `md-tazbid-sikder-519682216`
+- Facebook: `share/1DGPAexcYZ`
+- Instagram: `md.tazbid`
 
-- **Palette**: #222222 primary, #7B7B7B secondary, #F8F8F8 tertiary, #FFFFFF. Replaces the current Paper & Ink cream tones with a cleaner grey/white system. Dark-mode variant keeps the same relationships inverted.
-- **Typography**: Space Grotesk stays (closest free equivalent to Aeonik — geometric neo-grotesk). Display sizes go much larger (clamp up to ~12rem for "Hello"). DM Sans body stays for support text.
-- **Layout language**: thin 1px rules, vertical rotated labels on the left/right ("Photographer / ETE student", year "2026"), tiny uppercase meta labels, oversized numbers with a small `+` superscript for stats.
+Wire them into:
 
-## Hero redesign (index)
+- **Footer** (`src/components/Footer.tsx`) — right-side icon row (LinkedIn, Facebook, Instagram) using `lucide-react` icons, subtle hover, opens in new tab with `rel="noreferrer noopener"`.
+- **Hero (desktop + mobile)** in `src/routes/index.tsx` — small inline row under the intro paragraph ("Elsewhere — LinkedIn · Facebook · Instagram") as text links, so they're visible above the fold.
+- **Blog page** (`src/routes/blog.tsx`) — since Blog is linked to FB/LinkedIn per earlier decision, surface the same three as prominent cards/links.
 
-```text
-┌─────────────────────────────────────────────────────┐
-│ logo  About  Photography  Skills  Labs  Blog   ↗    │
-├─────────────────────────────────────────────────────┤
-│ │   +200        +50                                 │
-│ │   Frames      Labs                                │
-│ P                                                   │
-│ h    Hello                    [   PORTRAIT   ]      │
-│ o    — ETE student &          [   (your     ]      │
-│ t    photographer, CUET       [    photo)   ]      │
-│ o                              [             ]      │
-│ │                              [             ]      │
-│ │   2026    Scroll down ↓                           │
-└─────────────────────────────────────────────────────┘
-```
+### 2. Remove the "01 / Hello" numbering + editorial tags
 
-- Left column: rotated "Photographer" label, stat pair (Frames / Labs), giant "Hello" wordmark, one-line tagline, year + scroll cue at bottom.
-- Right column: your camera self-portrait, full-bleed inside a subtle frame, slight desaturation to match monochrome palette (kept as CSS filter — original file untouched).
-- Ambient mouse-following blur orbs stay, toned down to soft grey so they don't fight the minimal palette.
+Strip the numeric/label ornamentation so the design reads calmer and more professional:
 
-## Photography page
+- Mobile hero: remove `/ 01 — Hello` top-left tag and `2026` top-right, remove the rotated "Photographer / ETE Student" side label, remove the `—` dash before the intro paragraph.
+- Desktop hero: remove rotated side labels (`Photographer / ETE Student`, `2026 — Portfolio`), remove `/ 01` and `Yashica · 38mm` overlays on the portrait, remove the `2026` label in the bottom row, remove the `—` dash before the intro.
+- Explore section: remove the `01`, `02`, `03`, `04` prefixes and the "01 — Frames & stories" meta strings next to each link. Keep just the section name + arrow.
+- Rename the section heading from "Explore" (with "Index" eyebrow) to a cleaner "Selected work" with no eyebrow tag.
 
-- Replace the current 3-col masonry with an **editorial-scroll layout**: full-width feature photo, then alternating two-up / one-up rows with generous whitespace, tiny caption metadata (title · category · year) beneath each, thin rule separators.
-- Filter chips (All / Portrait / Street / Nature / Night) across the top — you fill categories when you upload photos.
-- Hover: subtle scale + reveal of a longer caption line.
+### 3. Aesthetic + professional polish
 
-## Other pages (light polish only, same pass)
+Small, focused refinements — no palette change (keep Paper & Ink monochrome the user approved):
 
-- Skills / Labs / Blog: adopt the new oversized H1 + thin-rule dividers + rotated section label so the whole site feels consistent. No structural changes.
+- Tighten the hero: replace giant "Hello" with a more professional composition — a smaller wordmark `Md. Tazbid Sikder` (display font) as the H1, with a one-line role tag `Electronics & Telecommunication Engineering · CUET  /  Photographer` underneath, then the intro paragraph. This keeps the editorial feel without the shouty "Hello".
+- Stats bar stays but loses the `+` superscript styling clutter — cleaner numerals with hairline dividers between items.
+- Portrait frame: remove the mix-blend-difference labels; keep the image quiet.
+- Header: add the user's name as the wordmark instead of the generic "Portfolio".
+- Footer: replace "Built with curiosity, circuits, and light." with a shorter, more professional tagline and the socials row.
 
-## Assets
+### 4. Metadata
 
-- Upload your self-portrait (`user-uploads://IMG_20260118_150637524_HDR_PORTRAIT.jpg`) via `lovable-assets` and swap it in as the hero image.
-- Keep the current AI-generated gallery photos as placeholders until you send yours — I'll wire the swap points clearly.
+- Update `__root.tsx` and `index.tsx` head titles from generic "Portfolio —" to `Md. Tazbid Sikder — ETE, CUET & Photographer`.
 
-## Open question
+## Files touched
 
-You mentioned "I want to add some of my own things" — happy to include any of: a downloadable CV/resume, a contact block (email + socials), specific project write-ups (e.g. a communication-lab project), or photo captions with camera/lens info. Tell me which and I'll fit them into this same layout.
+- `src/routes/index.tsx` — hero + explore rewrite
+- `src/components/Footer.tsx` — socials row + tagline
+- `src/components/Header.tsx` — wordmark = name
+- `src/routes/blog.tsx` — social links surfaced
+- `src/routes/__root.tsx` — site title/description
 
-## Technical notes
+## Not changing
 
-- Update `src/styles.css` tokens to the new monochrome oklch values (light + dark).
-- Rewrite `src/routes/index.tsx` hero section and `src/routes/photography.tsx` layout.
-- Add a `lovable-assets` pointer for the portrait at `src/assets/portrait.jpg.asset.json`.
-- Tune `MouseFollower` orb colors to the new palette.
-- No new dependencies; no backend changes.
+- Color palette, typography, split-screen layout, mobile full-bleed hero structure, gallery page.
+
+Confirm your name spelling — I'll use **Md. Tazbid Sikder** based on your LinkedIn. Say the word and I'll build.
