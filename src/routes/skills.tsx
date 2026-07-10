@@ -1,92 +1,138 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { Cpu, Code2, Camera, Wrench } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
+import { cardPress } from "../lib/motion";
 
 export const Route = createFileRoute("/skills")({
   head: () => ({
     meta: [
-      { title: "Skills — Portfolio" },
+      { title: "Skills — Md. Tazbid Sikder" },
       {
         name: "description",
         content:
-          "Engineering, programming, and creative skills of an ETE student and photographer.",
+          "Engineering, programming, photography, and tool skills — an ETE student's working set.",
       },
-      { property: "og:title", content: "Skills — Portfolio" },
+      { property: "og:title", content: "Skills — Md. Tazbid Sikder" },
       {
         property: "og:description",
         content:
-          "Engineering, programming, and creative skills of an ETE student and photographer.",
+          "Engineering, programming, photography, and tool skills — an ETE student's working set.",
       },
     ],
   }),
   component: Skills,
 });
 
-const engineeringSkills = [
-  "Circuit Analysis & Design",
-  "Analog & Digital Electronics",
-  "Signal Processing",
-  "Communication Systems",
-  "MATLAB & Simulink",
-  "Embedded Systems (Arduino, ESP32)",
-  "PCB Design",
-  "Python & C/C++",
-];
+type Group = {
+  Icon: typeof Cpu;
+  label: string;
+  title: string;
+  blurb: string;
+  items: string[];
+  span: string;
+};
 
-const creativeSkills = [
-  "Digital Photography",
-  "Lightroom & Photoshop",
-  "Color Grading",
-  "Composition & Visual Storytelling",
-  "Portrait & Street Photography",
-  "Adobe Premiere Basics",
-  "UI/UX Sensibility",
-  "Technical Writing",
+const groups: Group[] = [
+  {
+    Icon: Cpu,
+    label: "Core discipline",
+    title: "Electronics & Communication",
+    blurb:
+      "Circuits, signals, and systems — the theory behind every board I've ever soldered.",
+    items: [
+      "Circuit analysis & design",
+      "Analog & digital electronics",
+      "Signal processing",
+      "Communication systems",
+      "Embedded systems (Arduino, ESP32)",
+      "PCB design",
+    ],
+    span: "md:col-span-2 md:row-span-2",
+  },
+  {
+    Icon: Code2,
+    label: "Programming",
+    title: "Code",
+    blurb: "Comfortable moving between low-level firmware and higher-level scripts.",
+    items: ["Python", "C / C++", "MATLAB & Simulink", "Git"],
+    span: "md:col-span-2",
+  },
+  {
+    Icon: Camera,
+    label: "Craft",
+    title: "Photography",
+    blurb: "Frames, light, and the patience to wait for both.",
+    items: [
+      "Portrait & street",
+      "Lightroom",
+      "Photoshop",
+      "Color grading",
+      "Composition",
+    ],
+    span: "md:col-span-2",
+  },
+  {
+    Icon: Wrench,
+    label: "Toolkit",
+    title: "Tools & extras",
+    blurb: "The small things that keep the work moving.",
+    items: ["Figma", "Notion", "Premiere Pro", "LaTeX", "Technical writing"],
+    span: "md:col-span-2",
+  },
 ];
 
 function Skills() {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
-        <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
-          What I bring
+        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+          / 02 — What I bring
         </p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+        <h1 className="mt-4 font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
           Skills
         </h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          A mix of hardware thinking, software tools, and visual craft — built through coursework,
-          personal projects, and countless hours behind the camera.
+        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          A working set built between the lab bench, my editor, and long walks with a camera.
         </p>
       </FadeIn>
 
-      <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
-        <FadeIn delay={0.1}>
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <h2 className="font-display text-2xl font-medium text-card-foreground">Engineering</h2>
-            <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {engineeringSkills.map((skill) => (
-                <li key={skill} className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.2}>
-          <div className="rounded-2xl border border-border bg-card p-8">
-            <h2 className="font-display text-2xl font-medium text-card-foreground">Creative</h2>
-            <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {creativeSkills.map((skill) => (
-                <li key={skill} className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <span className="h-1.5 w-1.5 rounded-full bg-ring" />
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </FadeIn>
+      <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-5">
+        {groups.map((g, i) => (
+          <FadeIn key={g.title} delay={i * 0.06} className={g.span}>
+            <motion.article
+              {...cardPress}
+              className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-6 md:p-8"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border">
+                    <g.Icon className="h-4 w-4 text-foreground" />
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                    {g.label}
+                  </span>
+                </div>
+                <h2 className="mt-6 font-display text-2xl font-medium tracking-tight text-card-foreground md:text-3xl">
+                  {g.title}
+                </h2>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                  {g.blurb}
+                </p>
+              </div>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {g.items.map((it) => (
+                  <li
+                    key={it}
+                    className="rounded-full border border-border px-3 py-1 text-[11px] font-medium tracking-wide text-muted-foreground transition-colors group-hover:border-foreground/30 group-hover:text-foreground"
+                  >
+                    {it}
+                  </li>
+                ))}
+              </ul>
+            </motion.article>
+          </FadeIn>
+        ))}
       </div>
     </div>
   );
