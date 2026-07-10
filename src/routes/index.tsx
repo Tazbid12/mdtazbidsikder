@@ -103,7 +103,8 @@ function Index() {
       </section>
 
       {/* HERO (desktop / tablet) */}
-      <section className="relative mx-auto hidden max-w-[1400px] px-6 pb-24 pt-12 md:block md:px-12">
+      <section className="relative mx-auto hidden max-w-[1400px] px-6 pb-12 pt-12 md:block md:px-12 md:pb-16">
+
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10">
           {/* Left column */}
           <div className="order-2 flex flex-col justify-between md:order-1 md:col-span-7">
@@ -181,8 +182,10 @@ function Index() {
         </div>
       </section>
 
+      <SectionDivider eyebrow="Index / 2026" hint="Selected work" />
+
       {/* SELECTED WORK */}
-      <section id="explore" className="mx-auto max-w-[1400px] px-6 pb-32 md:px-12">
+      <section id="explore" className="mx-auto max-w-[1400px] px-6 pb-24 pt-8 md:px-12 md:pb-32 md:pt-10">
         <FadeIn>
           <div className="flex items-end justify-between border-b border-border pb-6">
             <h2 className="font-display text-4xl font-medium tracking-tight text-foreground md:text-6xl">
@@ -197,22 +200,27 @@ function Index() {
         <div className="divide-y divide-border">
           {sections.map((s, i) => (
             <FadeIn key={s.to} delay={0.05 + i * 0.05}>
-              <Link to={s.to} className="group block">
+              <Link to={s.to} className="group block focus-visible:outline-none">
                 <motion.div
-                  whileHover={{ x: 8 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex items-center justify-between py-8 md:py-10"
+                  {...hoverShift}
+                  className="flex items-center justify-between py-6 md:py-10"
                 >
-                  <h3 className="font-display text-3xl font-medium tracking-tight text-foreground md:text-5xl">
-                    {s.label}
-                  </h3>
-                  <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:h-6 md:w-6" />
+                  <div className="flex items-baseline gap-4 md:gap-6">
+                    <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
+                      0{i + 1}
+                    </span>
+                    <h3 className="font-display text-3xl font-medium tracking-tight text-foreground md:text-5xl">
+                      {s.label}
+                    </h3>
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:h-6 md:w-6" />
                 </motion.div>
               </Link>
             </FadeIn>
           ))}
         </div>
       </section>
+
     </div>
   );
 }
