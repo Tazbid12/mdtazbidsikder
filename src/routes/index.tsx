@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowDown, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
+import { SectionDivider } from "../components/SectionDivider";
+import { hoverShift } from "../lib/motion";
 import portraitAsset from "../assets/portrait.jpg.asset.json";
 import { SOCIALS } from "../lib/socials";
 
