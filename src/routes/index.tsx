@@ -175,10 +175,10 @@ function Index() {
           {/* BLOG / NOTES */}
           <TileLink
             to="/blog"
-            className="col-span-4 row-span-1 md:col-span-3 md:row-span-2"
+            className="col-span-5 row-span-1 md:col-span-3 md:row-span-2"
           >
-            <div className="flex h-full items-center gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
+            <div className="flex h-full items-center gap-2 md:gap-3">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
                 <NotebookPen className="h-4 w-4" />
               </span>
               <div className="min-w-0 flex-1">
