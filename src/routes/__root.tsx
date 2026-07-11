@@ -135,21 +135,24 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
+  const isHome = pathname === "/";
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <MouseFollower />
+        {!isHome && <MouseFollower />}
         <div className="relative flex min-h-screen flex-col">
           <Header />
           <main className="flex-1 pt-16">
             <AnimatePresence mode="wait">
-              <PageTransition key={useRouter().state.location.pathname}>
+              <PageTransition key={pathname}>
                 <Outlet />
               </PageTransition>
             </AnimatePresence>
           </main>
-          <Footer />
+          {!isHome && <Footer />}
         </div>
       </ThemeProvider>
     </QueryClientProvider>
