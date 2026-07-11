@@ -164,7 +164,7 @@ function Index() {
                 <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
                   Secondary
                 </p>
-                <p className="truncate font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
                   Photography
                 </p>
               </div>
@@ -185,7 +185,7 @@ function Index() {
                 <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
                   Journal
                 </p>
-                <p className="truncate font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
                   Blog
                 </p>
               </div>
