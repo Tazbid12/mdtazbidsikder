@@ -154,8 +154,12 @@ function Index() {
           {/* PHOTOGRAPHY — secondary */}
           <TileLink
             to="/photography"
-            className="col-span-8 row-span-1 md:col-span-4 md:row-span-2"
+            className="col-span-7 row-span-1 md:col-span-4 md:row-span-2"
           >
+            <div className="flex h-full items-center gap-2 md:gap-3">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
+                <Camera className="h-4 w-4" />
+              </span>
             <div className="flex h-full items-center gap-3">
               <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
                 <Camera className="h-4 w-4" />
