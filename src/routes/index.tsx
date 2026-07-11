@@ -160,10 +160,6 @@ function Index() {
               <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
                 <Camera className="h-4 w-4" />
               </span>
-            <div className="flex h-full items-center gap-3">
-              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
-                <Camera className="h-4 w-4" />
-              </span>
               <div className="min-w-0 flex-1">
                 <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
                   Secondary
