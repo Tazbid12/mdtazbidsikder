@@ -1,11 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUpRight, Linkedin, Facebook, Instagram } from "lucide-react";
-import { FadeIn } from "../components/FadeIn";
-import { SectionDivider } from "../components/SectionDivider";
-import { hoverShift } from "../lib/motion";
-import portraitAsset from "../assets/portrait.jpg.asset.json";
+import {
+  ArrowUpRight,
+  Cpu,
+  FlaskConical,
+  Camera,
+  Linkedin,
+  Facebook,
+  Instagram,
+  NotebookPen,
+} from "lucide-react";
+import { SpiderWeb } from "../components/SpiderWeb";
 import { SOCIALS } from "../lib/socials";
+import portraitAsset from "../assets/portrait.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,13 +21,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Portfolio of Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET, and a photographer.",
+          "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
       },
-      { property: "og:title", content: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
+      { property: "og:title", content: "Md. Tazbid Sikder — Portfolio" },
       {
         property: "og:description",
         content:
-          "Portfolio of Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET, and a photographer.",
+          "Engineering & photography portfolio of Md. Tazbid Sikder — ETE, CUET.",
       },
       { property: "og:image", content: portraitAsset.url },
       { name: "twitter:image", content: portraitAsset.url },
@@ -29,224 +36,248 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const sections = [
-  { to: "/photography", label: "Photography" },
-  { to: "/skills", label: "Skills" },
-  { to: "/labs", label: "Labs" },
-  { to: "/blog", label: "Blog" },
-] as const;
-
-const socialLinks = [
+const socials = [
   { href: SOCIALS.linkedin, label: "LinkedIn", Icon: Linkedin },
-  { href: SOCIALS.facebook, label: "Facebook", Icon: Facebook },
   { href: SOCIALS.instagram, label: "Instagram", Icon: Instagram },
+  { href: SOCIALS.facebook, label: "Facebook", Icon: Facebook },
 ];
 
 function Index() {
   return (
-    <div className="relative">
-      {/* MOBILE HERO — fullscreen portrait with intro overlay */}
-      <section className="relative md:hidden">
-        <div className="relative h-[100svh] w-full overflow-hidden bg-black">
-          <img
-            src={portraitAsset.url}
-            alt="Portrait of Md. Tazbid Sikder holding a Yashica film camera"
-            className="absolute inset-0 h-full w-full object-cover grayscale contrast-[1.05]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/35 to-black/90" />
+    <div
+      className="relative overflow-hidden bg-[#F8F8F8]"
+      style={{ height: "calc(100svh - 4rem)" }}
+    >
+      {/* interactive spider-web background */}
+      <SpiderWeb color="#222222" />
 
-          <div className="absolute inset-x-0 bottom-0 px-6 pb-10">
-            <FadeIn>
-              <h1 className="font-display text-3xl font-medium leading-tight tracking-tight text-white">
-                Md. Tazbid Sikder
-              </h1>
-              <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.28em] text-white/70">
-                ETE, CUET · Photographer
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.1}>
-              <p className="mt-5 max-w-[22rem] text-sm leading-relaxed text-white/85">
-                An Electronics &amp; Telecommunication Engineering student at CUET,
-                and a photographer chasing quiet frames.
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.15}>
-              <div className="mt-5 flex items-center gap-3">
-                {socialLinks.map(({ href, label, Icon }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors hover:bg-white/10 hover:text-white"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                ))}
-              </div>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <div className="mt-8 flex items-center justify-between border-t border-white/20 pt-4 text-white">
-                <div className="flex items-center gap-8">
-                  <MobileStat value="200" label="Frames" />
-                  <MobileStat value="12" label="Labs" />
-                </div>
-                <a href="#explore" className="inline-flex items-center gap-2 text-xs font-medium">
-                  Scroll
-                  <ArrowDown className="h-3.5 w-3.5" />
-                </a>
-              </div>
-            </FadeIn>
-          </div>
+      {/* soft top vignette to seat the header */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent" />
+
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
+        {/* Meta strip */}
+        <div className="flex shrink-0 items-center justify-between text-[10px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
+          <span>Portfolio · 2026</span>
+          <span className="hidden sm:inline">Chattogram, BD · 22°N 91°E</span>
+          <span>ETE / CUET</span>
         </div>
-      </section>
 
-      {/* HERO (desktop / tablet) */}
-      <section className="relative mx-auto hidden max-w-[1400px] px-6 pb-12 pt-12 md:block md:px-12 md:pb-16">
-
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-10">
-          {/* Left column */}
-          <div className="order-2 flex flex-col justify-between md:order-1 md:col-span-7">
-            {/* Name + role */}
-            <FadeIn>
+        {/* Dashboard grid */}
+        <div className="mt-3 grid min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-2 md:mt-4 md:gap-3">
+          {/* INTRO */}
+          <Tile className="col-span-12 row-span-3 md:col-span-5 md:row-span-6">
+            <div className="flex h-full flex-col justify-between">
               <div>
-                <h1 className="font-display text-5xl font-medium leading-[1.05] tracking-tight text-foreground md:text-7xl">
+                <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[#7B7B7B]">
                   Md. Tazbid Sikder
+                </p>
+                <h1 className="mt-3 font-display text-[clamp(1.6rem,4vw,3.2rem)] font-medium leading-[1.02] tracking-[-0.02em] text-[#222222]">
+                  Building systems &amp;
+                  <br />
+                  capturing quiet frames.
                 </h1>
-                <p className="mt-4 text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
-                  Electronics &amp; Telecommunication Engineering, CUET · Photographer
+                <p className="mt-4 max-w-md text-[13px] leading-relaxed text-[#7B7B7B] md:text-sm">
+                  Electronics &amp; Telecommunication Engineering student at CUET.
+                  Building systems and circuits, while capturing quiet frames as a
+                  passionate photographer.
                 </p>
               </div>
-            </FadeIn>
 
-            {/* Intro */}
-            <FadeIn delay={0.1}>
-              <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                I build with circuits and code, and photograph the quiet in between.
-                This is a small archive of the work — engineering, frames, and notes.
-              </p>
-            </FadeIn>
-
-            {/* Socials */}
-            <FadeIn delay={0.15}>
-              <div className="mt-8 flex items-center gap-2">
-                {socialLinks.map(({ href, label, Icon }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/40 hover:bg-accent hover:text-foreground"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                ))}
+              <div className="mt-4 flex items-end justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  {socials.map(({ href, label, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] transition-colors hover:bg-[#222222] hover:text-white"
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                    </a>
+                  ))}
+                </div>
+                <div className="hidden h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#7B7B7B]/30 md:block">
+                  <img
+                    src={portraitAsset.url}
+                    alt="Md. Tazbid Sikder"
+                    className="h-full w-full object-cover grayscale"
+                  />
+                </div>
               </div>
-            </FadeIn>
-
-            {/* Stats */}
-            <FadeIn delay={0.2}>
-              <div className="mt-12 flex items-start divide-x divide-border border-t border-border pt-6">
-                <Stat value="200" label="Frames captured" />
-                <Stat value="12" label="Lab projects" />
-                <Stat value="B.Sc" label="ETE, CUET" />
-              </div>
-            </FadeIn>
-
-            {/* Bottom row */}
-            <FadeIn delay={0.25}>
-              <div className="mt-10 flex items-center justify-end">
-                <a
-                  href="#explore"
-                  className="group inline-flex items-center gap-2 text-sm font-medium text-foreground"
-                >
-                  Scroll down
-                  <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-1" />
-                </a>
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Right column — portrait */}
-          <FadeIn direction="left" delay={0.15} className="order-1 md:order-2 md:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
-              <img
-                src={portraitAsset.url}
-                alt="Portrait of Md. Tazbid Sikder holding a Yashica film camera"
-                className="h-full w-full object-cover grayscale contrast-[1.05]"
-              />
             </div>
-          </FadeIn>
+          </Tile>
+
+          {/* SKILLS — primary */}
+          <TileLink
+            to="/skills"
+            className="col-span-6 row-span-2 md:col-span-4 md:row-span-4"
+          >
+            <TileHead
+              label="01 · Primary"
+              Icon={Cpu}
+              title="Skills"
+              subtitle="Circuits, code, craft."
+            />
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map(
+                (t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-[#7B7B7B]/40 bg-white px-2.5 py-1 text-[10px] font-medium tracking-wide text-[#222222]"
+                  >
+                    {t}
+                  </span>
+                ),
+              )}
+            </div>
+          </TileLink>
+
+          {/* LABS — primary */}
+          <TileLink
+            to="/labs"
+            className="col-span-6 row-span-2 md:col-span-3 md:row-span-4"
+          >
+            <TileHead
+              label="02 · Primary"
+              Icon={FlaskConical}
+              title="Labs"
+              subtitle="Sessional benchwork."
+            />
+            <div className="mt-auto grid grid-cols-2 gap-2 pt-3">
+              <Metric value="12" label="Labs" />
+              <Metric value="04" label="Semesters" />
+            </div>
+          </TileLink>
+
+          {/* PHOTOGRAPHY — secondary */}
+          <TileLink
+            to="/photography"
+            className="col-span-7 row-span-1 md:col-span-4 md:row-span-2"
+          >
+            <div className="flex h-full items-center gap-2 md:gap-3">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
+                <Camera className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
+                  Secondary
+                </p>
+                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                  Photography
+                </p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 shrink-0 text-[#7B7B7B]" />
+            </div>
+          </TileLink>
+
+          {/* BLOG / NOTES */}
+          <TileLink
+            to="/blog"
+            className="col-span-5 row-span-1 md:col-span-3 md:row-span-2"
+          >
+            <div className="flex h-full items-center gap-2 md:gap-3">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
+                <NotebookPen className="h-4 w-4" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
+                  Journal
+                </p>
+                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                  Blog
+                </p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 shrink-0 text-[#7B7B7B]" />
+            </div>
+          </TileLink>
         </div>
-      </section>
-
-      <SectionDivider eyebrow="Index / 2026" hint="Selected work" />
-
-      {/* SELECTED WORK */}
-      <section id="explore" className="mx-auto max-w-[1400px] px-6 pb-24 pt-8 md:px-12 md:pb-32 md:pt-10">
-        <FadeIn>
-          <div className="flex items-end justify-between border-b border-border pb-6">
-            <h2 className="font-display text-4xl font-medium tracking-tight text-foreground md:text-6xl">
-              Selected work
-            </h2>
-            <p className="hidden max-w-xs text-sm text-muted-foreground md:block">
-              Circuits, lenses, sessional benchwork, and words.
-            </p>
-          </div>
-        </FadeIn>
-
-        <div className="divide-y divide-border">
-          {sections.map((s, i) => (
-            <FadeIn key={s.to} delay={0.05 + i * 0.05}>
-              <Link to={s.to} className="group block focus-visible:outline-none">
-                <motion.div
-                  {...hoverShift}
-                  className="flex items-center justify-between py-6 md:py-10"
-                >
-                  <div className="flex items-baseline gap-4 md:gap-6">
-                    <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-                      0{i + 1}
-                    </span>
-                    <h3 className="font-display text-3xl font-medium tracking-tight text-foreground md:text-5xl">
-                      {s.label}
-                    </h3>
-                  </div>
-                  <ArrowUpRight className="h-5 w-5 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground md:h-6 md:w-6" />
-                </motion.div>
-              </Link>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
+function Tile({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex flex-col px-6 first:pl-0 last:pr-0">
-      <span className="font-display text-3xl font-medium leading-none tracking-tight text-foreground md:text-4xl">
-        {value}
-      </span>
-      <span className="mt-3 text-[11px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
-        {label}
-      </span>
+    <div
+      className={`relative overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/70 p-4 backdrop-blur-md md:p-5 ${className}`}
+    >
+      {children}
     </div>
   );
 }
 
-function MobileStat({ value, label }: { value: string; label: string }) {
+function TileLink({
+  to,
+  children,
+  className = "",
+}: {
+  to: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="flex flex-col">
-      <span className="font-display text-2xl font-medium leading-none tracking-tight">
+    <Link to={to} className={`group focus-visible:outline-none ${className}`}>
+      <motion.div
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.985 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/70 p-4 backdrop-blur-md transition-colors group-hover:border-[#222222]/60 md:p-5"
+      >
+        {children}
+      </motion.div>
+    </Link>
+  );
+}
+
+function TileHead({
+  label,
+  Icon,
+  title,
+  subtitle,
+}: {
+  label: string;
+  Icon: typeof Cpu;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
+          <Icon className="h-4 w-4" />
+        </span>
+        <span className="text-[9px] font-medium uppercase tracking-[0.3em] text-[#7B7B7B]">
+          {label}
+        </span>
+      </div>
+      <div className="mt-4 flex items-baseline justify-between gap-3">
+        <h2 className="font-display text-2xl font-medium tracking-tight text-[#222222] md:text-3xl">
+          {title}
+        </h2>
+        <ArrowUpRight className="h-4 w-4 shrink-0 text-[#7B7B7B] transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#222222]" />
+      </div>
+      <p className="mt-1 text-xs text-[#7B7B7B] md:text-sm">{subtitle}</p>
+    </div>
+  );
+}
+
+function Metric({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-xl border border-[#7B7B7B]/25 bg-[#F8F8F8] px-3 py-2">
+      <div className="font-display text-xl font-medium leading-none tracking-tight text-[#222222]">
         {value}
-      </span>
-      <span className="mt-1.5 text-[9px] font-medium uppercase tracking-[0.22em] text-white/60">
+      </div>
+      <div className="mt-1.5 text-[9px] font-medium uppercase tracking-[0.24em] text-[#7B7B7B]">
         {label}
-      </span>
+      </div>
     </div>
   );
 }
