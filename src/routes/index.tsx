@@ -10,7 +10,6 @@ import {
   Instagram,
   NotebookPen,
 } from "lucide-react";
-import { SpiderWeb } from "../components/SpiderWeb";
 import { SOCIALS } from "../lib/socials";
 import portraitAsset from "../assets/portrait.jpg.asset.json";
 
@@ -45,15 +44,9 @@ const socials = [
 function Index() {
   return (
     <div
-      className="relative overflow-hidden bg-[#F8F8F8]"
+      className="relative overflow-hidden"
       style={{ height: "calc(100svh - 4rem)" }}
     >
-      {/* interactive spider-web background */}
-      <SpiderWeb color="#222222" />
-
-      {/* soft top vignette to seat the header */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white to-transparent" />
-
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
         {/* Meta strip */}
         <div className="flex shrink-0 items-center justify-between text-[10px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
@@ -66,45 +59,47 @@ function Index() {
         <div className="mt-3 grid min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-2 md:mt-4 md:gap-3">
           {/* INTRO */}
           <Tile className="col-span-12 row-span-3 md:col-span-5 md:row-span-6">
-            <div className="flex h-full flex-col justify-between">
-              <div>
-                <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[#7B7B7B]">
-                  Md. Tazbid Sikder
-                </p>
-                <h1 className="mt-3 font-display text-[clamp(1.6rem,4vw,3.2rem)] font-medium leading-[1.02] tracking-[-0.02em] text-[#222222]">
-                  Building systems &amp;
-                  <br />
-                  capturing quiet frames.
-                </h1>
-                <p className="mt-4 max-w-md text-[13px] leading-relaxed text-[#7B7B7B] md:text-sm">
-                  Electronics &amp; Telecommunication Engineering student at CUET.
-                  Building systems and circuits, while capturing quiet frames as a
-                  passionate photographer.
-                </p>
-              </div>
-
-              <div className="mt-4 flex items-end justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  {socials.map(({ href, label, Icon }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] transition-colors hover:bg-[#222222] hover:text-white"
-                    >
-                      <Icon className="h-3.5 w-3.5" />
-                    </a>
-                  ))}
+            <div className="flex h-full min-w-0 flex-col justify-between gap-3">
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-[#7B7B7B]">
+                    Md. Tazbid Sikder
+                  </p>
+                  <h1 className="mt-2 font-display font-medium leading-[1.05] tracking-[-0.02em] text-[#222222] [font-size:clamp(1.4rem,2.6vw,2.4rem)]">
+                    Building systems &amp;
+                    <br />
+                    capturing quiet frames.
+                  </h1>
                 </div>
-                <div className="hidden h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#7B7B7B]/30 md:block">
+                {/* Portrait — always visible */}
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-[#7B7B7B]/30 md:h-24 md:w-24">
                   <img
                     src={portraitAsset.url}
                     alt="Md. Tazbid Sikder"
                     className="h-full w-full object-cover grayscale"
                   />
                 </div>
+              </div>
+
+              <p className="max-w-md text-[12px] leading-relaxed text-[#7B7B7B] md:text-sm">
+                Electronics &amp; Telecommunication Engineering student at CUET.
+                Building systems and circuits, while capturing quiet frames as a
+                passionate photographer.
+              </p>
+
+              <div className="flex items-center gap-2">
+                {socials.map(({ href, label, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7B7B7B]/40 bg-white/60 text-[#222222] backdrop-blur-sm transition-colors hover:bg-[#222222] hover:text-white"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                ))}
               </div>
             </div>
           </Tile>
@@ -125,7 +120,7 @@ function Index() {
                 (t) => (
                   <span
                     key={t}
-                    className="rounded-full border border-[#7B7B7B]/40 bg-white px-2.5 py-1 text-[10px] font-medium tracking-wide text-[#222222]"
+                    className="rounded-full border border-[#7B7B7B]/40 bg-white/60 px-2.5 py-1 text-[10px] font-medium tracking-wide text-[#222222] backdrop-blur-sm"
                   >
                     {t}
                   </span>
@@ -156,7 +151,7 @@ function Index() {
             to="/photography"
             className="col-span-7 row-span-1 md:col-span-4 md:row-span-2"
           >
-            <div className="flex h-full items-center gap-2 md:gap-3">
+            <div className="flex h-full min-w-0 items-center gap-2 md:gap-3">
               <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
                 <Camera className="h-4 w-4" />
               </span>
@@ -164,7 +159,7 @@ function Index() {
                 <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
                   Secondary
                 </p>
-                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                <p className="truncate font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
                   Photography
                 </p>
               </div>
@@ -177,7 +172,7 @@ function Index() {
             to="/blog"
             className="col-span-5 row-span-1 md:col-span-3 md:row-span-2"
           >
-            <div className="flex h-full items-center gap-2 md:gap-3">
+            <div className="flex h-full min-w-0 items-center gap-2 md:gap-3">
               <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222] md:h-9 md:w-9">
                 <NotebookPen className="h-4 w-4" />
               </span>
@@ -185,7 +180,7 @@ function Index() {
                 <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-[#7B7B7B]">
                   Journal
                 </p>
-                <p className="font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
+                <p className="truncate font-display text-lg font-medium tracking-tight text-[#222222] md:text-xl">
                   Blog
                 </p>
               </div>
@@ -207,7 +202,7 @@ function Tile({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/70 p-4 backdrop-blur-md md:p-5 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/45 p-4 backdrop-blur-sm md:p-5 ${className}`}
     >
       {children}
     </div>
@@ -229,7 +224,7 @@ function TileLink({
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.985 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/70 p-4 backdrop-blur-md transition-colors group-hover:border-[#222222]/60 md:p-5"
+        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-[#7B7B7B]/25 bg-white/45 p-4 backdrop-blur-sm transition-colors group-hover:border-[#222222]/60 md:p-5"
       >
         {children}
       </motion.div>
@@ -249,33 +244,33 @@ function TileHead({
   subtitle: string;
 }) {
   return (
-    <div>
-      <div className="flex items-center justify-between">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
+    <div className="min-w-0">
+      <div className="flex items-center justify-between gap-2">
+        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#7B7B7B]/40 text-[#222222]">
           <Icon className="h-4 w-4" />
         </span>
-        <span className="text-[9px] font-medium uppercase tracking-[0.3em] text-[#7B7B7B]">
+        <span className="truncate text-[9px] font-medium uppercase tracking-[0.3em] text-[#7B7B7B]">
           {label}
         </span>
       </div>
       <div className="mt-4 flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-2xl font-medium tracking-tight text-[#222222] md:text-3xl">
+        <h2 className="truncate font-display text-2xl font-medium tracking-tight text-[#222222] md:text-3xl">
           {title}
         </h2>
         <ArrowUpRight className="h-4 w-4 shrink-0 text-[#7B7B7B] transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#222222]" />
       </div>
-      <p className="mt-1 text-xs text-[#7B7B7B] md:text-sm">{subtitle}</p>
+      <p className="mt-1 truncate text-xs text-[#7B7B7B] md:text-sm">{subtitle}</p>
     </div>
   );
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-xl border border-[#7B7B7B]/25 bg-[#F8F8F8] px-3 py-2">
+    <div className="min-w-0 rounded-xl border border-[#7B7B7B]/25 bg-white/50 px-3 py-2 backdrop-blur-sm">
       <div className="font-display text-xl font-medium leading-none tracking-tight text-[#222222]">
         {value}
       </div>
-      <div className="mt-1.5 text-[9px] font-medium uppercase tracking-[0.24em] text-[#7B7B7B]">
+      <div className="mt-1.5 truncate text-[9px] font-medium uppercase tracking-[0.24em] text-[#7B7B7B]">
         {label}
       </div>
     </div>

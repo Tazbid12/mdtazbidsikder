@@ -11,7 +11,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-border/50 bg-background py-10">
+    <footer className="border-t border-border/40 bg-background/60 py-10 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-5 px-6 md:flex-row">
         <p className="text-sm text-muted-foreground">
           © {year} Md. Tazbid Sikder — ETE, CUET.
