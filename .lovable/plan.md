@@ -1,57 +1,57 @@
-## Goal
-Fix the awkward whitespace above "Selected work" on the homepage, and give the inner pages (Photography, Skills, Labs, Blog) a more creative, professional, responsive treatment with tactile click animations.
+# Plan: Global spider-web + homepage polish
 
-## 1. Homepage — tighten the scroll seam
-The gap looks weird because the hero uses `pb-24 pt-12` and "Selected work" starts with a big empty band before the title. Changes:
-- Reduce hero bottom padding and "Selected work" top padding so the transition feels intentional.
-- Add a slim divider strip between hero and selected work: a thin rule with a small uppercase eyebrow ("Index / 2026") on the left and an arrow-down marker on the right — turns dead space into a section break.
-- Mobile: after the full-bleed portrait section, add the same divider strip so the next section doesn't feel disconnected.
-- The "Selected work" list rows: tighten vertical rhythm on mobile (`py-6` instead of `py-8`), keep desktop generous. Add a subtle animated underline sweep on hover and a scale-down press state on tap for the click animation.
+## 1. Make the spider web global and more alive
 
-## 2. Shared polish — click + hover language
-Introduce one consistent interaction vocabulary reused across every page:
-- **Link rows / cards**: hover slides content right by 8px and reveals a thin underline; `whileTap` scales to 0.98 for tactile press feedback on mobile.
-- **Filter chips / buttons**: `whileTap` scale 0.95, active state gets a small dot indicator.
-- **Images**: hover zoom stays, add a soft brightness lift on tap.
-Implemented via a small set of framer-motion variants in a new `src/lib/motion.ts` so every page pulls from the same source.
+- Move `SpiderWeb` out of `src/routes/index.tsx` and mount it once in `src/routes/__root.tsx` as a `fixed inset-0 -z-0` layer, so it renders behind every page (home, photography, skills, labs, blog).
+- Bump visibility and motion:
+  - Increase `density` (~2–2.5×) and slightly increase `linkDistance` so the web reads clearly on both phone and desktop.
+  - Increase node radius and link/node alpha so lines are visible against `#F8F8F8`.
+  - Increase mouse influence radius + pull strength on desktop.
+  - Increase gyroscope multiplier on mobile (bigger parallax shift per degree of tilt) and lower the "natural hold" offset so small tilts already move the field.
+- Keep the canvas `pointer-events-none` so it never blocks clicks.
+- Retire the standalone `MouseFollower` on all routes (spider web now owns the mouse interaction globally); remove its mount from `__root.tsx`.
 
-## 3. Photography — more creative, still organized
-Keep the editorial scroll but upgrade composition:
-- Sticky category filter bar that becomes a compact pill row on mobile (horizontal scroll, no wrap jitter).
-- Add a running index counter on the left rail (desktop): `01 — 06` scrolls alongside frames.
-- Alternate `full / left / right / pair` layouts with clear captions; on mobile everything collapses to single column with the caption directly under the frame.
-- Add a lightbox on tap: click a frame → framer-motion `layoutId` expands it to a full-viewport modal with metadata, close on tap/escape.
-- Ensure every image has `loading="lazy"` and proper aspect ratios so mobile doesn't jank.
+## 2. Let the animation show through the UI
 
-## 4. Skills — from list to visual grid
-Rebuild as a responsive bento grid:
-- Categories: Electronics & Hardware, Programming, Photography, Tools.
-- Each cell is a card with an icon, category label, and a chip cloud of skills. Cards use the shared hover/tap animation.
-- Desktop: 4-column bento with one hero cell spanning 2×2. Mobile: single column, cards stack with generous spacing.
+- On the homepage tiles: drop the heavy `bg-white/70 backdrop-blur-md` in favor of a lighter translucent surface (e.g. `bg-white/40` + `backdrop-blur-sm`, thinner border) so the web is clearly visible behind text and tiles on mobile and desktop.
+- Apply the same lighter tile treatment to Skills, Labs, Photography, and Blog cards/sections so the global web reads through those pages too.
+- Header/Footer: give them a translucent background (`bg-[#F8F8F8]/70 backdrop-blur`) so the web animates behind them instead of being masked by solid bars.
 
-## 5. Labs — sessional work as an editorial index
-- Numbered list (01, 02, …) with course code, lab title, brief description, and tags (e.g. "Microcontroller", "Signals").
-- Expandable rows: tap a row → framer-motion height animation reveals details (objective, tools, outcome). Only one open at a time.
-- Desktop shows a two-column layout: numbered index on the left, expanded content on the right rail.
+## 3. Bring the portrait back on the homepage
 
-## 6. Blog — social-first cards
-- Three tall cards (LinkedIn, Facebook, Instagram) with distinctive typography, a short "what to expect there" note, and a large arrow. Whole card is the link with press animation.
-- Add a "Notes" strip below for future written posts (placeholder empty state — "Writing soon").
+- Restore the portrait visibly on both mobile and desktop:
+  - Desktop: promote the small avatar in the intro tile into a proper portrait block (grayscale, rounded, sized to the intro column) — remove the `hidden md:block` gate.
+  - Mobile: add a compact circular portrait next to the name/role inside the intro tile, so it's visible in the zero-scroll layout without breaking the grid.
+- Keep using `portraitAsset.url` from `src/assets/portrait.jpg.asset.json`.
 
-## 7. Responsiveness & professionalism checklist (applied to every page)
-- Consistent page padding scale: `px-6 md:px-12` and `max-w-[1400px] mx-auto`.
-- Section headers share the same rhythm: eyebrow (uppercase tracked), oversized display title, one-line intro, thin border-b.
-- All grids use `min-w-0` on text containers and `shrink-0` on icons per the responsive rules.
-- Add `<title>` and `<meta description>` per route (already present — verify uniqueness).
-- Focus-visible rings on every interactive element for keyboard users.
+## 4. Fix desktop overflow / alignment on the homepage grid
 
-## Technical
-- New file: `src/lib/motion.ts` — exported variants (`tapPress`, `hoverShift`, `chipPress`).
-- New component: `src/components/SectionDivider.tsx` — reusable strip used between hero and following section.
-- Edits: `src/routes/index.tsx` (spacing fix + divider + press anims), `src/routes/photography.tsx` (sticky filters, index rail, lightbox), `src/routes/skills.tsx` (bento), `src/routes/labs.tsx` (expandable rows), `src/routes/blog.tsx` (social cards).
-- No new dependencies — framer-motion, lucide-react, and Tailwind v4 tokens already cover this.
+- Constrain the intro heading with a sensible `max-w` and slightly smaller `clamp()` upper bound so "Building systems & capturing quiet frames." never spills past its tile at wide desktop widths.
+- Ensure every tile uses `min-w-0` on flex/grid text containers and `shrink-0` on icons/portraits (per the responsive-layout rule) so nothing pushes out of its tile.
+- Verify the 12-col / 6-row grid math still adds up on `md+` after adding the portrait block; adjust column/row spans if the intro tile needs more room for the portrait.
+- Re-check tiles on `sm` (single column) to keep the zero-scroll promise: content stays inside `100svh - header`.
 
-## Out of scope
-- No backend / Lovable Cloud changes.
-- No new color tokens; the current Paper & Ink monochrome palette stays.
-- No content copy rewrites beyond section eyebrows and empty states.
+## 5. Verification pass
+
+- Typecheck / build after edits.
+- Drive Playwright against `http://localhost:8080` at desktop (1280×1800) and mobile (`iPhone 13` viewport):
+  - Screenshot `/`, `/skills`, `/labs`, `/photography`, `/blog`.
+  - Confirm: web visible on all routes, portrait visible on `/`, no text overflow on desktop, everything fits within one viewport on `/`.
+  - Check console for errors.
+
+## Technical notes
+
+- Files touched: `src/routes/__root.tsx`, `src/components/SpiderWeb.tsx`, `src/routes/index.tsx`, `src/routes/{skills,labs,photography,blog}.tsx` (tile surface tweaks only), `src/components/Header.tsx`, `src/components/Footer.tsx`.
+- No functionality/data changes — presentation and motion only.
+
+## Open question
+
+You said "Anything else?" — one thing worth deciding: on `/photography`, the gallery images are opaque by design. Do you want the web to still show in the page margins/background (my current plan), or should photography stay web-free so images dominate?
+
+&nbsp;
+
+U can blur the web a bit there , 
+
+&nbsp;
+
+But for other pages I want people to notice the movement, density of the web and their movements 
