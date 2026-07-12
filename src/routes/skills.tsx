@@ -102,7 +102,7 @@ function Skills() {
           <FadeIn key={g.title} delay={i * 0.06} className={g.span}>
             <motion.article
               {...cardPress}
-              className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-6 md:p-8"
+              className="group flex h-full flex-col justify-between rounded-2xl border border-[#7B7B7B]/25 bg-white/55 p-6 backdrop-blur-sm md:p-8"
             >
               <div>
                 <div className="flex items-center justify-between">

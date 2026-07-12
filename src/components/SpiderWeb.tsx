@@ -2,19 +2,38 @@ import { useEffect, useRef } from "react";
 
 /**
  * Interactive spider-web particle network.
- * - Desktop: gradient blur follows mouse; nearby nodes are gently pulled.
- * - Mobile: DeviceOrientation (gyroscope) shifts the whole field for 3D parallax.
+ * - Desktop: gradient blur follows mouse; nearby nodes are pulled toward it.
+ * - Mobile: DeviceOrientation (gyroscope) shifts the field for 3D parallax.
+ *
+ * Renders `fixed inset-0` by default so a single instance can sit behind the
+ * whole app. Pass `positionClass="absolute"` for scoped use.
  */
 export function SpiderWeb({
   color = "#222222",
-  density = 0.00012,
-  linkDistance = 140,
+  density = 0.00028,
+  linkDistance = 160,
+  nodeRadius = 1.8,
+  linkAlpha = 0.55,
+  nodeAlpha = 0.9,
+  mouseRadius = 260,
+  mousePull = 12,
+  tiltStrength = 60,
+  blurPx = 0,
   className = "",
+  positionClass = "fixed",
 }: {
   color?: string;
   density?: number;
   linkDistance?: number;
+  nodeRadius?: number;
+  linkAlpha?: number;
+  nodeAlpha?: number;
+  mouseRadius?: number;
+  mousePull?: number;
+  tiltStrength?: number;
+  blurPx?: number;
   className?: string;
+  positionClass?: "fixed" | "absolute";
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
@@ -32,7 +51,7 @@ export function SpiderWeb({
 
     let width = 0;
     let height = 0;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let particles: {
       x: number;
       y: number;
@@ -43,6 +62,16 @@ export function SpiderWeb({
     }[] = [];
     let raf = 0;
 
+    // Parse the color into an rgb triple so alpha strokes match the theme.
+    const rgb = (() => {
+      const m = color.match(/^#([0-9a-f]{6})$/i);
+      if (m) {
+        const n = parseInt(m[1], 16);
+        return `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
+      }
+      return "34,34,34";
+    })();
+
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       width = rect.width;
@@ -51,7 +80,7 @@ export function SpiderWeb({
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.max(28, Math.min(90, Math.floor(width * height * density)));
+      const count = Math.max(60, Math.min(220, Math.floor(width * height * density)));
       particles = Array.from({ length: count }, () => {
         const x = Math.random() * width;
         const y = Math.random() * height;
@@ -60,8 +89,8 @@ export function SpiderWeb({
           y,
           bx: x,
           by: y,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
         };
       });
     };
@@ -80,25 +109,25 @@ export function SpiderWeb({
 
     const onOrient = (e: DeviceOrientationEvent) => {
       // gamma: left/right [-90..90], beta: front/back [-180..180]
-      const g = (e.gamma ?? 0) / 45; // -1..1
-      const b = ((e.beta ?? 0) - 30) / 45; // center around a natural hold
-      tiltRef.current.x = Math.max(-1.2, Math.min(1.2, g));
-      tiltRef.current.y = Math.max(-1.2, Math.min(1.2, b));
+      const g = (e.gamma ?? 0) / 25; // more sensitive
+      const b = ((e.beta ?? 0) - 30) / 25;
+      tiltRef.current.x = Math.max(-1.6, Math.min(1.6, g));
+      tiltRef.current.y = Math.max(-1.6, Math.min(1.6, b));
     };
 
     const draw = () => {
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
-      const tiltX = tiltRef.current.x * 28;
-      const tiltY = tiltRef.current.y * 28;
+      const tiltX = tiltRef.current.x * tiltStrength;
+      const tiltY = tiltRef.current.y * tiltStrength;
 
       ctx.clearRect(0, 0, width, height);
 
       // gradient blur behind the web (desktop mouse only)
       if (mouseRef.current.active) {
-        const grad = ctx.createRadialGradient(mx, my, 0, mx, my, 260);
-        grad.addColorStop(0, "rgba(34,34,34,0.10)");
-        grad.addColorStop(1, "rgba(34,34,34,0)");
+        const grad = ctx.createRadialGradient(mx, my, 0, mx, my, 320);
+        grad.addColorStop(0, `rgba(${rgb},0.14)`);
+        grad.addColorStop(1, `rgba(${rgb},0)`);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
       }
@@ -110,8 +139,8 @@ export function SpiderWeb({
         if (p.bx < 0 || p.bx > width) p.vx *= -1;
         if (p.by < 0 || p.by > height) p.vy *= -1;
 
-        // apply tilt (parallax) — deeper nodes move more via pseudo-depth from position
-        const depth = 0.6 + ((p.bx + p.by) % 100) / 200;
+        // pseudo-depth from position → deeper nodes parallax more
+        const depth = 0.5 + ((p.bx + p.by) % 100) / 140;
         let x = p.bx + tiltX * depth;
         let y = p.by + tiltY * depth;
 
@@ -120,10 +149,12 @@ export function SpiderWeb({
           const dx = mx - x;
           const dy = my - y;
           const d2 = dx * dx + dy * dy;
-          if (d2 < 180 * 180) {
-            const f = (1 - Math.sqrt(d2) / 180) * 6;
-            x += (dx / Math.sqrt(d2 || 1)) * f;
-            y += (dy / Math.sqrt(d2 || 1)) * f;
+          const R = mouseRadius;
+          if (d2 < R * R) {
+            const d = Math.sqrt(d2) || 1;
+            const f = (1 - d / R) * mousePull;
+            x += (dx / d) * f;
+            y += (dy / d) * f;
           }
         }
         p.x = x;
@@ -140,8 +171,8 @@ export function SpiderWeb({
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < linkDistance) {
-            const alpha = (1 - dist / linkDistance) * 0.35;
-            ctx.strokeStyle = `rgba(34,34,34,${alpha})`;
+            const alpha = (1 - dist / linkDistance) * linkAlpha;
+            ctx.strokeStyle = `rgba(${rgb},${alpha})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -151,10 +182,10 @@ export function SpiderWeb({
       }
 
       // nodes
-      ctx.fillStyle = color;
+      ctx.fillStyle = `rgba(${rgb},${nodeAlpha})`;
       for (const p of particles) {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, nodeRadius, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -174,7 +205,6 @@ export function SpiderWeb({
       const DOE = (window as unknown as {
         DeviceOrientationEvent?: { requestPermission?: () => Promise<string> };
       }).DeviceOrientationEvent;
-      // iOS 13+ needs permission; try silently, fall back gracefully
       if (DOE && typeof DOE.requestPermission === "function") {
         DOE.requestPermission()
           .then((res) => {
@@ -195,12 +225,26 @@ export function SpiderWeb({
       window.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("deviceorientation", onOrient);
     };
-  }, [color, density, linkDistance]);
+  }, [
+    color,
+    density,
+    linkDistance,
+    nodeRadius,
+    linkAlpha,
+    nodeAlpha,
+    mouseRadius,
+    mousePull,
+    tiltStrength,
+  ]);
+
+  const posClasses =
+    positionClass === "fixed" ? "fixed inset-0 h-full w-full" : "absolute inset-0 h-full w-full";
 
   return (
     <canvas
       ref={canvasRef}
-      className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
+      className={`pointer-events-none ${posClasses} ${className}`}
+      style={blurPx > 0 ? { filter: `blur(${blurPx}px)` } : undefined}
       aria-hidden="true"
     />
   );

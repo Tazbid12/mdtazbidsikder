@@ -24,8 +24,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "../components/ThemeProvider";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { MouseFollower } from "../components/MouseFollower";
 import { PageTransition } from "../components/PageTransition";
+import { SpiderWeb } from "../components/SpiderWeb";
 
 function NotFoundComponent() {
   return (
@@ -138,12 +138,25 @@ function RootComponent() {
   const router = useRouter();
   const pathname = router.state.location.pathname;
   const isHome = pathname === "/";
+  const isPhotography = pathname.startsWith("/photography");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        {!isHome && <MouseFollower />}
-        <div className="relative flex min-h-screen flex-col">
+        {/* Global spider-web background — sits behind every page. */}
+        <div className="pointer-events-none fixed inset-0 z-0 bg-[#F8F8F8]">
+          <SpiderWeb
+            color="#222222"
+            // On photography, keep the web present but softer so images dominate.
+            density={isPhotography ? 0.00018 : 0.00028}
+            linkDistance={isPhotography ? 140 : 170}
+            linkAlpha={isPhotography ? 0.28 : 0.55}
+            nodeAlpha={isPhotography ? 0.55 : 0.9}
+            nodeRadius={isPhotography ? 1.4 : 1.9}
+            blurPx={isPhotography ? 2.5 : 0}
+          />
+        </div>
+        <div className="relative z-10 flex min-h-screen flex-col">
           <Header />
           <main className="flex-1 pt-16">
             <AnimatePresence mode="wait">
