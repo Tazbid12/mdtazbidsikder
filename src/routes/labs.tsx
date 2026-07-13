@@ -125,7 +125,7 @@ function Labs() {
             >
               <button
                 onClick={() => setOpen(isOpen ? null : lab.code)}
-                className="group flex w-full items-center gap-4 py-6 text-left focus-visible:outline-none md:gap-8 md:py-8"
+                className="group flex w-full items-center gap-4 px-5 py-5 text-left focus-visible:outline-none md:gap-8 md:px-8 md:py-7"
                 aria-expanded={isOpen}
               >
                 <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground shrink-0 md:w-12">
