@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
  * - Desktop: gradient blur follows mouse; nearby nodes are pulled toward it.
  * - Mobile: DeviceOrientation (gyroscope) shifts the field for 3D parallax.
  *
- * Particles are spawned across an oversized virtual field (viewport + margin)
+ * Particles are spawned across an oversized virtual field (viewport + overscan)
  * so mouse pulls and device tilt never expose empty edges.
  */
 export function SpiderWeb({
@@ -16,12 +16,12 @@ export function SpiderWeb({
   linkAlpha = 0.55,
   nodeAlpha = 0.9,
   mouseRadius = 300,
-  mousePull = 18,
+  mousePull = 16,
   tiltStrength = 90,
   blurPx = 0,
   className = "",
   positionClass = "fixed",
-  overscan = 260,
+  overscan = 280,
 }: {
   color?: string;
   density?: number;
@@ -85,7 +85,6 @@ export function SpiderWeb({
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Oversized virtual field so tilt/mouse never reveal empty edges.
       fieldMinX = -overscan;
       fieldMaxX = width + overscan;
       fieldMinY = -overscan;
@@ -93,7 +92,7 @@ export function SpiderWeb({
       const fieldW = fieldMaxX - fieldMinX;
       const fieldH = fieldMaxY - fieldMinY;
 
-      const count = Math.max(90, Math.min(360, Math.floor(fieldW * fieldH * density)));
+      const count = Math.max(100, Math.min(400, Math.floor(fieldW * fieldH * density)));
       particles = Array.from({ length: count }, () => {
         const x = fieldMinX + Math.random() * fieldW;
         const y = fieldMinY + Math.random() * fieldH;
@@ -129,7 +128,6 @@ export function SpiderWeb({
     };
 
     const onOrient = (e: DeviceOrientationEvent) => {
-      // More sensitive: smaller divisor → more movement per degree of tilt.
       const g = (e.gamma ?? 0) / 18;
       const b = ((e.beta ?? 0) - 30) / 18;
       tiltRef.current.x = Math.max(-2, Math.min(2, g));
@@ -184,7 +182,6 @@ export function SpiderWeb({
         p.y = y;
       }
 
-      // Only draw links for particles reasonably close to the viewport.
       const margin = linkDistance;
       const visible = particles.filter(
         (p) => p.x > -margin && p.x < width + margin && p.y > -margin && p.y < height + margin,
