@@ -166,7 +166,7 @@ function Labs() {
                     transition={{ duration: 0.35, ease: easeOut }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-1 gap-6 pb-8 md:grid-cols-12 md:gap-10">
+                    <div className="grid grid-cols-1 gap-6 px-5 pb-6 md:grid-cols-12 md:gap-10 md:px-8 md:pb-8">
                       <div className="md:col-span-4 md:col-start-3">
                         <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
                           Objective
