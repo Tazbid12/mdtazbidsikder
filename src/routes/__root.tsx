@@ -21,7 +21,7 @@ import "@fontsource/dm-sans/700.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { ThemeProvider } from "../components/ThemeProvider";
+import { ThemeProvider, useTheme } from "../components/ThemeProvider";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { PageTransition } from "../components/PageTransition";
