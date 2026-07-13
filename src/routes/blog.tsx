@@ -73,7 +73,7 @@ function Blog() {
               target="_blank"
               rel="noopener noreferrer"
               {...cardPress}
-              className="group flex h-full flex-col justify-between rounded-2xl border border-[#7B7B7B]/25 bg-white/55 p-6 backdrop-blur-sm md:min-h-[280px] md:p-8"
+              className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-md md:min-h-[280px] md:p-8"
             >
               <div className="flex items-start justify-between">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border">
