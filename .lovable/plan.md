@@ -1,57 +1,58 @@
-# Plan: Global spider-web + homepage polish
+## Fixes & Polish Pass
 
-## 1. Make the spider web global and more alive
+### 1. Spider web coverage & density
 
-- Move `SpiderWeb` out of `src/routes/index.tsx` and mount it once in `src/routes/__root.tsx` as a `fixed inset-0 -z-0` layer, so it renders behind every page (home, photography, skills, labs, blog).
-- Bump visibility and motion:
-  - Increase `density` (~2–2.5×) and slightly increase `linkDistance` so the web reads clearly on both phone and desktop.
-  - Increase node radius and link/node alpha so lines are visible against `#F8F8F8`.
-  - Increase mouse influence radius + pull strength on desktop.
-  - Increase gyroscope multiplier on mobile (bigger parallax shift per degree of tilt) and lower the "natural hold" offset so small tilts already move the field.
-- Keep the canvas `pointer-events-none` so it never blocks clicks.
-- Retire the standalone `MouseFollower` on all routes (spider web now owns the mouse interaction globally); remove its mount from `__root.tsx`.
+Currently the canvas sits inside a `fixed inset-0` div that's 100vw × 100vh, so when the phone tilts, the field visibly shifts and reveals empty edges (tilt moves particles by up to ~96px but they only spawn within the visible rect).
 
-## 2. Let the animation show through the UI
+- In `SpiderWeb.tsx`, spawn particles across an oversized virtual field (viewport + generous margin on all sides, e.g. `+240px` each side) so tilt/mouse displacement never exposes empty edges.
+- Bump default `density` from `0.00028` → ~`0.00042` and raise the particle cap from 220 → ~340 for a fuller mesh.
+- Slightly raise `linkDistance` and keep link alpha as-is, so the web reads denser without becoming visually noisy.
+- Recompute the field & particle count on resize.
+- Increase the sensitivity when user touches the screen and how it reacts
+- Compatible for every size of devices 
 
-- On the homepage tiles: drop the heavy `bg-white/70 backdrop-blur-md` in favor of a lighter translucent surface (e.g. `bg-white/40` + `backdrop-blur-sm`, thinner border) so the web is clearly visible behind text and tiles on mobile and desktop.
-- Apply the same lighter tile treatment to Skills, Labs, Photography, and Blog cards/sections so the global web reads through those pages too.
-- Header/Footer: give them a translucent background (`bg-[#F8F8F8]/70 backdrop-blur`) so the web animates behind them instead of being masked by solid bars.
+### 2. Dark mode: make it actually work + invert the web
 
-## 3. Bring the portrait back on the homepage
+- The theme toggle exists but no page/tile uses theme tokens — everything is hard-coded to `#F8F8F8`, `#222222`, `bg-white/…`. In dark mode those don't change, so the UI looks identical.
+- Replace the hard-coded palette on the homepage tiles, header, footer, labs/skills/blog/photography pages with the existing semantic tokens (`bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-card/60`) so the `.dark` class actually flips colors.
+- Global background wrapper in `__root.tsx`: swap the fixed `bg-[#F8F8F8]` for `bg-background`.
+- `SpiderWeb`: accept theme-aware color. In `__root.tsx`, read `useTheme()` and pass `color="#FFFFFF"` (with adjusted alphas) when `theme === "dark"`, `#222222` when light. Web nodes/links invert cleanly.
+- Verify the theme toggle button in the header is wired to `toggleTheme` and visible on both mobile & desktop; fix if broken.
 
-- Restore the portrait visibly on both mobile and desktop:
-  - Desktop: promote the small avatar in the intro tile into a proper portrait block (grayscale, rounded, sized to the intro column) — remove the `hidden md:block` gate.
-  - Mobile: add a compact circular portrait next to the name/role inside the intro tile, so it's visible in the zero-scroll layout without breaking the grid.
-- Keep using `portraitAsset.url` from `src/assets/portrait.jpg.asset.json`.
+### 3. Labs page — text visible over the web
 
-## 4. Fix desktop overflow / alignment on the homepage grid
+Right now the labs list uses only `divide-y` and `border-t` on a transparent background, so the spider web renders through the text on the tight rows and hurts legibility.
 
-- Constrain the intro heading with a sensible `max-w` and slightly smaller `clamp()` upper bound so "Building systems & capturing quiet frames." never spills past its tile at wide desktop widths.
-- Ensure every tile uses `min-w-0` on flex/grid text containers and `shrink-0` on icons/portraits (per the responsive-layout rule) so nothing pushes out of its tile.
-- Verify the 12-col / 6-row grid math still adds up on `md+` after adding the portrait block; adjust column/row spans if the intro tile needs more room for the portrait.
-- Re-check tiles on `sm` (single column) to keep the zero-scroll promise: content stays inside `100svh - header`.
+- Wrap each lab row in a tile-style container: `rounded-xl border border-border bg-card/70 backdrop-blur-sm` with a small gap between rows instead of hairline dividers.
+- Expanded panel gets the same card background so objective/tools/tags stay readable.
+- Same treatment for the page header block (intro text) — put it in a soft card so it stands off the animated bg.
+- The fonts and their size how they are organized should be compatible for every type or size of devices, specially no words can't get out of the box
 
-## 5. Verification pass
+### 4. Full site QA pass (cross-check)
 
-- Typecheck / build after edits.
-- Drive Playwright against `http://localhost:8080` at desktop (1280×1800) and mobile (`iPhone 13` viewport):
-  - Screenshot `/`, `/skills`, `/labs`, `/photography`, `/blog`.
-  - Confirm: web visible on all routes, portrait visible on `/`, no text overflow on desktop, everything fits within one viewport on `/`.
-  - Check console for errors.
+Bug-sweep the other pages and apply the same "readable card behind text" + theme-token cleanup:
 
-## Technical notes
+- **Skills** (`skills.tsx`): confirm bento cards use `bg-card/70 backdrop-blur-sm` + `border-border`; fix any hard-coded hex.
+- **Photography** (`photography.tsx`): sticky filter bar needs `bg-background/80 backdrop-blur` so it doesn't blend into the web when scrolling; captions on a subtle card.
+- **Blog** (`blog.tsx`): social channel cards → tokenized surface.
+- **Header** (`Header.tsx`): translucent card surface + `text-foreground`; theme toggle icon swaps sun/moon.
+- **Footer** (`Footer.tsx`): tokenized.
+- **Homepage tiles**: swap `bg-white/45` → `bg-card/60`, `text-[#222222]` → `text-foreground`, `text-[#7B7B7B]` → `text-muted-foreground`, `border-[#7B7B7B]/25` → `border-border`. Portrait ring uses `border-border`.
+- Meta strip / stats: same token pass.
+- Check that the homepage still fits in one viewport on mobile after the changes — no regressions to the zero-scroll layout.
+- Confirm `AnimatePresence` route transitions still work and no `key` warnings appear.
+- Verify no unresolved imports; run typecheck-friendly edits only.
 
-- Files touched: `src/routes/__root.tsx`, `src/components/SpiderWeb.tsx`, `src/routes/index.tsx`, `src/routes/{skills,labs,photography,blog}.tsx` (tile surface tweaks only), `src/components/Header.tsx`, `src/components/Footer.tsx`.
-- No functionality/data changes — presentation and motion only.
+### Deliverable
 
-## Open question
+After this pass:
 
-You said "Anything else?" — one thing worth deciding: on `/photography`, the gallery images are opaque by design. Do you want the web to still show in the page margins/background (my current plan), or should photography stay web-free so images dominate?
+- Spider web fills the whole screen even at max tilt, and looks denser.
+- Toggling dark mode flips background, text, tiles, and inverts web color from `#222` → `#FFF`.
+- Labs (and every other page) has clearly legible text with the web sitting tastefully behind cards, not through the letters.
+- Consistent semantic tokens across the site so future theme tweaks are one file.
 
-&nbsp;
+### Technical notes
 
-U can blur the web a bit there , 
-
-&nbsp;
-
-But for other pages I want people to notice the movement, density of the web and their movements 
+- Files touched: `src/components/SpiderWeb.tsx`, `src/components/ThemeProvider.tsx` (only if a bug found), `src/components/Header.tsx`, `src/components/Footer.tsx`, `src/routes/__root.tsx`, `src/routes/index.tsx`, `src/routes/labs.tsx`, `src/routes/skills.tsx`, `src/routes/photography.tsx`, `src/routes/blog.tsx`.
+- No new dependencies. Pure presentation/theming changes; no server logic touched.

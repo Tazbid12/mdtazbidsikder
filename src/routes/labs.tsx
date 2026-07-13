@@ -115,14 +115,17 @@ function Labs() {
         </p>
       </FadeIn>
 
-      <ul className="mt-14 divide-y divide-border border-t border-border">
+      <ul className="mt-14 space-y-3">
         {labs.map((lab, i) => {
           const isOpen = open === lab.code;
           return (
-            <li key={lab.code}>
+            <li
+              key={lab.code}
+              className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md"
+            >
               <button
                 onClick={() => setOpen(isOpen ? null : lab.code)}
-                className="group flex w-full items-center gap-4 py-6 text-left focus-visible:outline-none md:gap-8 md:py-8"
+                className="group flex w-full items-center gap-4 px-5 py-5 text-left focus-visible:outline-none md:gap-8 md:px-8 md:py-7"
                 aria-expanded={isOpen}
               >
                 <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground shrink-0 md:w-12">
@@ -163,7 +166,7 @@ function Labs() {
                     transition={{ duration: 0.35, ease: easeOut }}
                     className="overflow-hidden"
                   >
-                    <div className="grid grid-cols-1 gap-6 pb-8 md:grid-cols-12 md:gap-10">
+                    <div className="grid grid-cols-1 gap-6 px-5 pb-6 md:grid-cols-12 md:gap-10 md:px-8 md:pb-8">
                       <div className="md:col-span-4 md:col-start-3">
                         <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
                           Objective
