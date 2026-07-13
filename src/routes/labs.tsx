@@ -115,11 +115,14 @@ function Labs() {
         </p>
       </FadeIn>
 
-      <ul className="mt-14 divide-y divide-border border-t border-border">
+      <ul className="mt-14 space-y-3">
         {labs.map((lab, i) => {
           const isOpen = open === lab.code;
           return (
-            <li key={lab.code}>
+            <li
+              key={lab.code}
+              className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md"
+            >
               <button
                 onClick={() => setOpen(isOpen ? null : lab.code)}
                 className="group flex w-full items-center gap-4 py-6 text-left focus-visible:outline-none md:gap-8 md:py-8"
