@@ -44,17 +44,17 @@ const socials = [
 
 function Index() {
   return (
-    <div className="relative overflow-hidden" style={{ height: "calc(100svh - 4rem - 12px)" }}>
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
-        <div className="flex shrink-0 items-center justify-between text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-          <span>Portfolio · 2026</span>
+    <div className="relative min-h-[calc(100svh-4rem-12px)] overflow-x-hidden">
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
+        <div className="flex shrink-0 items-center justify-between text-xs uppercase tracking-[0.24em] text-muted-foreground md:text-[13px]">
+          <span className="font-semibold text-foreground">Portfolio · 2026</span>
           <span className="hidden sm:inline">Chattogram, BD · 22°N 91°E</span>
-          <span>ETE / CUET</span>
+          <span className="font-semibold text-foreground">ETE / CUET</span>
         </div>
 
-        <div className="mt-3 grid min-h-0 flex-1 grid-cols-12 grid-rows-8 gap-2 md:mt-4 md:grid-rows-6 md:gap-3">
-          <Tile className="col-span-12 row-span-4 md:col-span-5 md:row-span-6">
-            <div className="flex h-full min-w-0 flex-col justify-between gap-3">
+        <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-2 md:mt-4 md:grid-cols-12 md:grid-rows-6 md:gap-3">
+          <Tile className="md:col-span-5 md:row-span-6">
+            <div className="flex h-full min-w-0 flex-col gap-2 md:gap-3">
               <div className="flex items-start gap-3 md:gap-4">
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
@@ -80,7 +80,7 @@ function Index() {
                 and circuits, while capturing quiet frames as a passionate photographer.
               </p>
 
-              <div className="flex items-center gap-2">
+              <div className="mt-auto flex items-center gap-2 pt-1">
                 {socials.map(({ href, label, Icon }) => (
                   <a
                     key={label}
@@ -97,7 +97,7 @@ function Index() {
             </div>
           </Tile>
 
-          <TileLink to="/skills" className="col-span-6 row-span-2 md:col-span-4 md:row-span-3">
+          <TileLink to="/skills" className="md:col-span-4 md:row-span-3">
             <TileHead Icon={Cpu} title="Skills" subtitle="Circuits, code, craft." />
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map((t) => (
@@ -111,7 +111,7 @@ function Index() {
             </div>
           </TileLink>
 
-          <TileLink to="/labs" className="col-span-6 row-span-2 md:col-span-3 md:row-span-3">
+          <TileLink to="/labs" className="md:col-span-3 md:row-span-3">
             <TileHead Icon={FlaskConical} title="Labs" subtitle="Sessional benchwork." />
             <div className="mt-auto grid grid-cols-2 gap-2 pt-3">
               <Metric value="12" label="Labs" />
@@ -119,15 +119,15 @@ function Index() {
             </div>
           </TileLink>
 
-          <TileLink to="/photography" className="col-span-6 row-span-1 md:col-span-4 md:row-span-3">
+          <TileLink to="/photography" className="md:col-span-4 md:row-span-3">
             <CompactTile Icon={Camera} title="Photography" />
           </TileLink>
 
-          <TileLink to="/blog" className="col-span-3 row-span-1 md:col-span-2 md:row-span-3">
+          <TileLink to="/blog" className="md:col-span-2 md:row-span-3">
             <CompactTile Icon={NotebookPen} title="Blog" />
           </TileLink>
 
-          <TileLink to="/cv" className="col-span-3 row-span-1 md:col-span-1 md:row-span-3">
+          <TileLink to="/cv" className="md:col-span-1 md:row-span-3">
             <CompactTile Icon={FileText} title="CV" />
           </TileLink>
         </div>

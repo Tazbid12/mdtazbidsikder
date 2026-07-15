@@ -33,7 +33,7 @@ function Photography() {
         <h1 className="font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
           Photography
         </h1>
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+        <p className="mt-6 max-w-2xl text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
           Two tracks: single frames and short stories. Browse quickly here, then open each section
           for the full set.
         </p>
