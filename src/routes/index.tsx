@@ -87,7 +87,7 @@ function Index() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/30 text-foreground backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/50 text-foreground backdrop-blur-sm transition-colors hover:bg-foreground hover:text-background"
                   >
                     <Icon className="h-3.5 w-3.5" />
                   </a>
@@ -102,7 +102,7 @@ function Index() {
               {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-border bg-card/30 px-2 py-0.5 text-[9px] font-medium tracking-wide text-foreground backdrop-blur-sm md:px-2.5 md:py-1 md:text-[10px]"
+                  className="rounded-full border border-border bg-card/50 px-2 py-0.5 text-[9px] font-medium tracking-wide text-foreground backdrop-blur-sm md:px-2.5 md:py-1 md:text-[10px]"
                 >
                   {t}
                 </span>
@@ -118,12 +118,10 @@ function Index() {
             </div>
           </TileLink>
 
-          {/* Photography expanded to col-span-5 to fill the space left by the removed Blog tile */}
           <TileLink to="/photography" className="md:col-span-5 md:row-span-3">
             <CompactTile Icon={Camera} title="Photography" />
           </TileLink>
 
-          {/* CV expanded to col-span-2 to keep the grid perfectly aligned (5 + 4 + 3 = 12 and 5 + 5 + 2 = 12) */}
           <TileLink to="/cv" className="md:col-span-2 md:row-span-3">
             <CompactTile Icon={FileText} title="CV" />
           </TileLink>
@@ -136,7 +134,7 @@ function Index() {
 function Tile({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-border bg-card/30 p-3 backdrop-blur-sm md:p-5 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-border bg-card/50 p-3 backdrop-blur-sm md:p-5 ${className}`}
     >
       {children}
     </div>
@@ -158,7 +156,7 @@ function TileLink({
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.985 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/30 p-3 backdrop-blur-sm transition-colors group-hover:border-foreground/60 md:p-5"
+        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/50 p-3 backdrop-blur-sm transition-colors group-hover:border-foreground/60 group-hover:bg-card/60 md:p-5"
       >
         {children}
       </motion.div>
@@ -209,7 +207,7 @@ function CompactTile({ Icon, title }: { Icon: typeof Cpu; title: string }) {
 
 function Metric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="min-w-0 rounded-xl border border-border bg-card/30 px-2.5 py-2 backdrop-blur-sm md:px-3">
+    <div className="min-w-0 rounded-xl border border-border bg-card/50 px-2.5 py-2 backdrop-blur-sm md:px-3">
       <div className="font-display text-lg font-medium leading-none tracking-tight text-foreground md:text-xl">
         {value}
       </div>
