@@ -81,9 +81,6 @@ const groups: Group[] = [
 ];
 
 const highlights = ["Embedded systems", "Communication theory", "Python + C/C++", "Lightroom"];
-const allSkills = groups.flatMap((group) =>
-  group.items.map((item) => ({ item, groupId: group.id })),
-);
 
 function Skills() {
   return (
@@ -111,25 +108,6 @@ function Skills() {
               >
                 {item}
               </span>
-            ))}
-          </div>
-        </section>
-      </FadeIn>
-
-      <FadeIn delay={0.08}>
-        <section className="mt-4 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-foreground">
-            At-a-glance overview
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {allSkills.map(({ item, groupId }) => (
-              <a
-                key={item}
-                href={`#${groupId}`}
-                className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground transition-colors hover:border-foreground/60"
-              >
-                {item}
-              </a>
             ))}
           </div>
         </section>
