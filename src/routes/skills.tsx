@@ -81,7 +81,9 @@ const groups: Group[] = [
 ];
 
 const highlights = ["Embedded systems", "Communication theory", "Python + C/C++", "Lightroom"];
-const allSkills = groups.flatMap((group) => group.items.map((item) => ({ item, groupId: group.id })));
+const allSkills = groups.flatMap((group) =>
+  group.items.map((item) => ({ item, groupId: group.id })),
+);
 
 function Skills() {
   return (
