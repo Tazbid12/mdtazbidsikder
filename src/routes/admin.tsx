@@ -1,76 +1,90 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
-
-export const Route = createFileRoute('/admin')({
-  component: AdminPage,
-});
-
-function AdminPage() {
-  const [Studio, setStudio] = useState<any>(null);
-  const [config, setConfig] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // 1. Apply ALL Vite browser polyfills FIRST before Sanity even exists
-    if (typeof window !== 'undefined') {
-      (window as any).global = window;
-      (window as any).process = (window as any).process || {
-        env: { NODE_ENV: 'production' },
-      };
-    }
-
-    // 2. Fetch the modules DYNAMICALLY so Vite cannot hoist them to the server
-    const loadStudio = async () => {
-      try {
-        const sanity = await import('sanity');
-        const sanityStructure = await import('sanity/structure');
-
-        const studioConfig = sanity.defineConfig({
-          name: 'default',
-          title: 'Portfolio Admin',
-          projectId: 'jbds1kqs',
-          dataset: 'production',
-          basePath: '/admin',
-          plugins: [sanityStructure.structureTool()],
-          schema: { types: [] }, // We will hook up your forms here next
-        });
-
-        setConfig(studioConfig);
-        setStudio(() => sanity.Studio);
-      } catch (err: any) {
-        // If it fails, catch the exact error so we can read it on the screen
-        setError(err.message || String(err));
-      }
-    };
-
-    loadStudio();
-  }, []);
-
-  // 3. Render any crashes directly to the screen instead of the generic Lovable error
-  if (error) {
-    return (
-      <div className="flex min-h-[100svh] flex-col items-center justify-center bg-red-50 p-6 text-center">
-        <h1 className="mb-4 text-2xl font-bold text-red-600">Studio Failed to Load</h1>
-        <pre className="max-w-2xl whitespace-pre-wrap rounded-lg bg-white p-4 text-left font-mono text-[11px] text-red-900 shadow border border-red-200">
-          {error}
-        </pre>
-      </div>
-    );
+{
+  "name": "tanstack_start_ts",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.8",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-progress": "^1.1.8",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@tailwindcss/vite": "^4.2.1",
+    "@tanstack/react-query": "^5.101.1",
+    "@tanstack/react-router": "^1.170.16",
+    "@tanstack/react-start": "^1.168.26",
+    "@tanstack/router-plugin": "^1.168.18",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
+    "framer-motion": "^12.42.2",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^0.575.0",
+    "react": "^19.2.0",
+    "react-day-picker": "^9.14.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.71.2",
+    "react-resizable-panels": "^4.6.5",
+    "recharts": "^2.15.4",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "tailwindcss": "^4.2.1",
+    "tw-animate-css": "^1.3.4",
+    "vaul": "^1.1.2",
+    "vite-tsconfig-paths": "^6.0.2",
+    "zod": "^3.24.2",
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@lovable.dev/vite-tanstack-config": "^2.7.1",
+    "@types/node": "^22.16.5",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^15.15.0",
+    "nitro": "3.0.260603-beta",
+    "prettier": "^3.7.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^8.0.16"
   }
-
-  // 4. Show a safe loading screen while the massive Sanity package downloads
-  if (!Studio || !config) {
-    return (
-      <div className="flex h-[100svh] w-full items-center justify-center bg-background font-mono text-sm text-muted-foreground">
-        Booting Admin Dashboard...
-      </div>
-    );
-  }
-
-  // 5. Mount the dashboard
-  return (
-    <div className="h-[100svh] w-full bg-background overflow-hidden" id="sanity-root">
-      <Studio config={config} />
-    </div>
-  );
 }
