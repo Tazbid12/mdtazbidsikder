@@ -1,22 +1,30 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Studio } from 'sanity';
-import config from '../sanity.config';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/admin')({
   component: AdminPage,
 });
 
 function AdminPage() {
-  const [isClient, setIsClient] = useState(false);
+  const [StudioComponent, setStudioComponent] = useState<any>(null);
+  const [sanityConfig, setSanityConfig] = useState<any>(null);
 
   useEffect(() => {
-    setIsClient(true);
+    // This strictly forces Sanity and your config to only load in the browser
+    const loadAdmin = async () => {
+      const sanityModule = await import('sanity');
+      const configModule = await import('../sanity.config');
+      
+      setSanityConfig(configModule.default);
+      setStudioComponent(() => sanityModule.Studio);
+    };
+
+    loadAdmin();
   }, []);
 
-  if (!isClient) {
+  if (!StudioComponent || !sanityConfig) {
     return (
-      <div className="flex h-[100svh] w-full items-center justify-center bg-background text-foreground">
+      <div className="flex h-[100svh] w-full items-center justify-center bg-background text-foreground font-medium">
         Loading Admin Panel...
       </div>
     );
@@ -24,7 +32,7 @@ function AdminPage() {
 
   return (
     <div className="h-[100svh] w-full">
-      <Studio config={config} />
+      <StudioComponent config={sanityConfig} />
     </div>
   );
 }
