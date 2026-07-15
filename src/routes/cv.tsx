@@ -59,12 +59,6 @@ function CV() {
         </motion.a>
       </FadeIn>
 
-      <FadeIn delay={0.12}>
-        <p className="mt-3 text-xs text-muted-foreground">
-          TODO: Replace placeholder Overleaf URL with public share link.
-        </p>
-      </FadeIn>
-
       <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
         <InfoCard
           Icon={GraduationCap}
