@@ -22,11 +22,11 @@ export const Route = createFileRoute("/")({
         content:
           "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
       },
-      { property: "og:title", content: "Md. Tazbid Sikder — Portfolio" },
+      { property: "og:title", content: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
       {
         property: "og:description",
         content:
-          "Engineering & photography portfolio of Md. Tazbid Sikder — ETE, CUET.",
+          "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
       },
       { property: "og:image", content: portraitAsset.url },
       { name: "twitter:image", content: portraitAsset.url },
