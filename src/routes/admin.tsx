@@ -1,7 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, useEffect, lazy, Suspense } from 'react';
 
-// 1. We tell Vite to bundle the Studio in a separate chunk that the server ignores
+// VITE FIX: Sanity requires Node environment variables that Vite removes.
+// This injects a safe fallback into the browser so Sanity doesn't instantly crash.
+if (typeof window !== 'undefined' && !(window as any).process) {
+  (window as any).process = { env: { NODE_ENV: 'production' } };
+}
+
+// Load the studio component from your components folder
 const ClientStudio = lazy(() => import('../components/SanityStudio'));
 
 export const Route = createFileRoute('/admin')({
@@ -12,25 +18,20 @@ function AdminPage() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // 2. This ONLY triggers in the user's browser
     setIsClient(true);
   }, []);
 
-  // 3. The Server stops here. It never reaches the Sanity import.
+  // 1. If the server is rendering, return an empty div to prevent SSR crashes
   if (!isClient) {
-    return (
-      <div className="flex h-[100svh] w-full items-center justify-center font-mono text-sm text-muted-foreground">
-        Loading Admin Environment...
-      </div>
-    );
+    return <div className="h-[100svh] w-full bg-background" />;
   }
 
-  // 4. The Browser takes over and safely mounts the heavy Sanity UI
+  // 2. Once the browser takes over, safely load the polyfilled Studio
   return (
     <div className="h-[100svh] w-full bg-background">
       <Suspense fallback={
-        <div className="flex h-[100svh] w-full items-center justify-center font-mono text-sm text-muted-foreground">
-          Loading Studio UI...
+        <div className="flex h-full w-full items-center justify-center font-mono text-sm text-muted-foreground">
+          Loading Admin Interface...
         </div>
       }>
         <ClientStudio />
