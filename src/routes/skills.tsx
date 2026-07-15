@@ -38,8 +38,7 @@ const groups: Group[] = [
     Icon: Cpu,
     label: "Core discipline",
     title: "Electronics & Communication",
-    blurb:
-      "Circuits, signals, and systems — the theory behind every board I've ever soldered.",
+    blurb: "Circuits, signals, and systems — the theory behind every board I've ever soldered.",
     items: [
       "Circuit analysis & design",
       "Analog & digital electronics",
@@ -63,13 +62,7 @@ const groups: Group[] = [
     label: "Craft",
     title: "Photography",
     blurb: "Frames, light, and the patience to wait for both.",
-    items: [
-      "Portrait & street",
-      "Lightroom",
-      "Photoshop",
-      "Color grading",
-      "Composition",
-    ],
+    items: ["Portrait & street", "Lightroom", "Photoshop", "Color grading", "Composition"],
     span: "md:col-span-2",
   },
   {
@@ -82,22 +75,40 @@ const groups: Group[] = [
   },
 ];
 
+const highlights = ["Embedded systems", "Communication theory", "Python + C/C++", "Lightroom"];
+
 function Skills() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
-        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
-          / 02 — What I bring
-        </p>
-        <h1 className="mt-4 font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
+        <h1 className="font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
           Skills
         </h1>
-        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          A working set built between the lab bench, my editor, and long walks with a camera.
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          My core stack spans electronics, embedded work, and software tools, supported by visual
+          craft through photography.
         </p>
       </FadeIn>
 
-      <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-5">
+      <FadeIn delay={0.06}>
+        <section className="mt-8 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:p-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              Top tools / current focus
+            </span>
+            {highlights.map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-border px-3 py-1 text-[11px] font-medium tracking-wide text-foreground"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </section>
+      </FadeIn>
+
+      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-5">
         {groups.map((g, i) => (
           <FadeIn key={g.title} delay={i * 0.06} className={g.span}>
             <motion.article

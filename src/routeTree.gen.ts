@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as PhotographyRouteImport } from './routes/photography'
 import { Route as LabsRouteImport } from './routes/labs'
+import { Route as CvRouteImport } from './routes/cv'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PhotographyStoriesRouteImport } from './routes/photography.stories'
+import { Route as PhotographySinglesRouteImport } from './routes/photography.singles'
 
 const SkillsRoute = SkillsRouteImport.update({
   id: '/skills',
@@ -30,6 +33,11 @@ const LabsRoute = LabsRouteImport.update({
   path: '/labs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CvRoute = CvRouteImport.update({
+  id: '/cv',
+  path: '/cv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -40,42 +48,87 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PhotographyStoriesRoute = PhotographyStoriesRouteImport.update({
+  id: '/stories',
+  path: '/stories',
+  getParentRoute: () => PhotographyRoute,
+} as any)
+const PhotographySinglesRoute = PhotographySinglesRouteImport.update({
+  id: '/singles',
+  path: '/singles',
+  getParentRoute: () => PhotographyRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/cv': typeof CvRoute
   '/labs': typeof LabsRoute
-  '/photography': typeof PhotographyRoute
+  '/photography': typeof PhotographyRouteWithChildren
   '/skills': typeof SkillsRoute
+  '/photography/singles': typeof PhotographySinglesRoute
+  '/photography/stories': typeof PhotographyStoriesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/cv': typeof CvRoute
   '/labs': typeof LabsRoute
-  '/photography': typeof PhotographyRoute
+  '/photography': typeof PhotographyRouteWithChildren
   '/skills': typeof SkillsRoute
+  '/photography/singles': typeof PhotographySinglesRoute
+  '/photography/stories': typeof PhotographyStoriesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
+  '/cv': typeof CvRoute
   '/labs': typeof LabsRoute
-  '/photography': typeof PhotographyRoute
+  '/photography': typeof PhotographyRouteWithChildren
   '/skills': typeof SkillsRoute
+  '/photography/singles': typeof PhotographySinglesRoute
+  '/photography/stories': typeof PhotographyStoriesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/blog' | '/labs' | '/photography' | '/skills'
+  fullPaths:
+    | '/'
+    | '/blog'
+    | '/cv'
+    | '/labs'
+    | '/photography'
+    | '/skills'
+    | '/photography/singles'
+    | '/photography/stories'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/blog' | '/labs' | '/photography' | '/skills'
-  id: '__root__' | '/' | '/blog' | '/labs' | '/photography' | '/skills'
+  to:
+    | '/'
+    | '/blog'
+    | '/cv'
+    | '/labs'
+    | '/photography'
+    | '/skills'
+    | '/photography/singles'
+    | '/photography/stories'
+  id:
+    | '__root__'
+    | '/'
+    | '/blog'
+    | '/cv'
+    | '/labs'
+    | '/photography'
+    | '/skills'
+    | '/photography/singles'
+    | '/photography/stories'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BlogRoute: typeof BlogRoute
+  CvRoute: typeof CvRoute
   LabsRoute: typeof LabsRoute
-  PhotographyRoute: typeof PhotographyRoute
+  PhotographyRoute: typeof PhotographyRouteWithChildren
   SkillsRoute: typeof SkillsRoute
 }
 
@@ -102,6 +155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LabsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cv': {
+      id: '/cv'
+      path: '/cv'
+      fullPath: '/cv'
+      preLoaderRoute: typeof CvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog': {
       id: '/blog'
       path: '/blog'
@@ -116,14 +176,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/photography/stories': {
+      id: '/photography/stories'
+      path: '/stories'
+      fullPath: '/photography/stories'
+      preLoaderRoute: typeof PhotographyStoriesRouteImport
+      parentRoute: typeof PhotographyRoute
+    }
+    '/photography/singles': {
+      id: '/photography/singles'
+      path: '/singles'
+      fullPath: '/photography/singles'
+      preLoaderRoute: typeof PhotographySinglesRouteImport
+      parentRoute: typeof PhotographyRoute
+    }
   }
 }
+
+interface PhotographyRouteChildren {
+  PhotographySinglesRoute: typeof PhotographySinglesRoute
+  PhotographyStoriesRoute: typeof PhotographyStoriesRoute
+}
+
+const PhotographyRouteChildren: PhotographyRouteChildren = {
+  PhotographySinglesRoute: PhotographySinglesRoute,
+  PhotographyStoriesRoute: PhotographyStoriesRoute,
+}
+
+const PhotographyRouteWithChildren = PhotographyRoute._addFileChildren(
+  PhotographyRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BlogRoute: BlogRoute,
+  CvRoute: CvRoute,
   LabsRoute: LabsRoute,
-  PhotographyRoute: PhotographyRoute,
+  PhotographyRoute: PhotographyRouteWithChildren,
   SkillsRoute: SkillsRoute,
 }
 export const routeTree = rootRouteImport
