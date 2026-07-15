@@ -1,55 +1,40 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
+
+// 1. We tell Vite to bundle the Studio in a separate chunk that the server ignores
+const ClientStudio = lazy(() => import('../components/SanityStudio'));
 
 export const Route = createFileRoute('/admin')({
   component: AdminPage,
 });
 
 function AdminPage() {
-  const [StudioComponent, setStudioComponent] = useState<any>(null);
-  const [sanityConfig, setSanityConfig] = useState<any>(null);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const initSanity = async () => {
-      try {
-        // 1. We load the packages ONLY inside this browser environment
-        const { Studio, defineConfig } = await import('sanity');
-        const { structureTool } = await import('sanity/structure');
-
-        // 2. We build the config inline so the server never sees it
-        const config = defineConfig({
-          name: 'default',
-          title: 'Portfolio Admin',
-          projectId: 'jbds1kqs',
-          dataset: 'production',
-          basePath: '/admin',
-          plugins: [structureTool()],
-          schema: {
-            types: [], // We will hook up your pageContent/tabs here next
-          },
-        });
-
-        setSanityConfig(config);
-        setStudioComponent(() => Studio);
-      } catch (error) {
-        console.error("Sanity failed to load:", error);
-      }
-    };
-
-    initSanity();
+    // 2. This ONLY triggers in the user's browser
+    setIsClient(true);
   }, []);
 
-  if (!StudioComponent || !sanityConfig) {
+  // 3. The Server stops here. It never reaches the Sanity import.
+  if (!isClient) {
     return (
       <div className="flex h-[100svh] w-full items-center justify-center font-mono text-sm text-muted-foreground">
-        Booting Studio Environment...
+        Loading Admin Environment...
       </div>
     );
   }
 
+  // 4. The Browser takes over and safely mounts the heavy Sanity UI
   return (
-    <div className="h-[100svh] w-full">
-      <StudioComponent config={sanityConfig} />
+    <div className="h-[100svh] w-full bg-background">
+      <Suspense fallback={
+        <div className="flex h-[100svh] w-full items-center justify-center font-mono text-sm text-muted-foreground">
+          Loading Studio UI...
+        </div>
+      }>
+        <ClientStudio />
+      </Suspense>
     </div>
   );
 }
