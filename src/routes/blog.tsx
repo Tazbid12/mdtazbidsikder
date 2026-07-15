@@ -53,15 +53,12 @@ function Blog() {
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
-        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
-          / 04 — Words & posts
-        </p>
-        <h1 className="mt-4 font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
+        <h1 className="font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
           Blog
         </h1>
         <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          Rather than mirror everything here, my writing lives where the conversation is.
-          Pick the channel that fits.
+          Rather than mirror everything here, my writing lives where the conversation is. Pick the
+          channel that fits.
         </p>
       </FadeIn>
 

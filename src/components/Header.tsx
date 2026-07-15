@@ -6,10 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { to: "/", label: "Overview" },
-  { to: "/photography", label: "Photography" },
   { to: "/skills", label: "Skills" },
   { to: "/labs", label: "Labs" },
+  { to: "/photography", label: "Photography" },
   { to: "/blog", label: "Blog" },
+  { to: "/cv", label: "CV" },
 ];
 
 export function Header() {
@@ -17,7 +18,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link to="/" className="font-display text-lg font-medium tracking-tight text-foreground">
           Md. Tazbid Sikder

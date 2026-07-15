@@ -9,6 +9,7 @@ import {
   Facebook,
   Instagram,
   NotebookPen,
+  FileText,
 } from "lucide-react";
 import { SOCIALS } from "../lib/socials";
 import portraitAsset from "../assets/portrait.jpg.asset.json";
@@ -43,10 +44,7 @@ const socials = [
 
 function Index() {
   return (
-    <div
-      className="relative overflow-hidden"
-      style={{ height: "calc(100svh - 4rem)" }}
-    >
+    <div className="relative overflow-hidden" style={{ height: "calc(100svh - 4rem)" }}>
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
         <div className="flex shrink-0 items-center justify-between text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
           <span>Portfolio · 2026</span>
@@ -54,21 +52,21 @@ function Index() {
           <span>ETE / CUET</span>
         </div>
 
-        <div className="mt-3 grid min-h-0 flex-1 grid-cols-12 grid-rows-6 gap-2 md:mt-4 md:gap-3">
-          <Tile className="col-span-12 row-span-3 md:col-span-5 md:row-span-6">
+        <div className="mt-3 grid min-h-0 flex-1 grid-cols-12 grid-rows-8 gap-2 md:mt-4 md:grid-rows-6 md:gap-3">
+          <Tile className="col-span-12 row-span-4 md:col-span-5 md:row-span-6">
             <div className="flex h-full min-w-0 flex-col justify-between gap-3">
               <div className="flex items-start gap-3 md:gap-4">
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
                     Md. Tazbid Sikder
                   </p>
-                  <h1 className="mt-2 font-display font-medium leading-[1.05] tracking-[-0.02em] text-foreground [font-size:clamp(1.3rem,2.6vw,2.4rem)]">
+                  <h1 className="mt-2 font-display font-medium leading-[1.05] tracking-[-0.02em] text-foreground [font-size:clamp(1.2rem,2.3vw,2.4rem)]">
                     Building systems &amp;
                     <br />
                     capturing quiet frames.
                   </h1>
                 </div>
-                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-full border border-border md:h-24 md:w-24">
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border md:h-24 md:w-24">
                   <img
                     src={portraitAsset.url}
                     alt="Md. Tazbid Sikder"
@@ -78,9 +76,8 @@ function Index() {
               </div>
 
               <p className="max-w-md text-[12px] leading-relaxed text-muted-foreground md:text-sm">
-                Electronics &amp; Telecommunication Engineering student at CUET.
-                Building systems and circuits, while capturing quiet frames as a
-                passionate photographer.
+                Electronics &amp; Telecommunication Engineering student at CUET. Building systems
+                and circuits, while capturing quiet frames as a passionate photographer.
               </p>
 
               <div className="flex items-center gap-2">
@@ -100,40 +97,29 @@ function Index() {
             </div>
           </Tile>
 
-          <TileLink
-            to="/skills"
-            className="col-span-6 row-span-2 md:col-span-4 md:row-span-4"
-          >
-            <TileHead
-              label="01 · Primary"
-              Icon={Cpu}
-              title="Skills"
-              subtitle="Circuits, code, craft."
-            />
+          <TileLink to="/skills" className="col-span-6 row-span-2 md:col-span-4 md:row-span-3">
+            <TileHead Icon={Cpu} title="Skills" subtitle="Circuits, code, craft." />
             <div className="mt-4 flex flex-wrap gap-1.5">
-              {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map(
-                (t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-border bg-card/70 px-2.5 py-1 text-[10px] font-medium tracking-wide text-foreground backdrop-blur-sm"
-                  >
-                    {t}
-                  </span>
-                ),
-              )}
+              {[
+                "Embedded",
+                "Signals",
+                "C/C++",
+                "Python",
+                "MATLAB",
+                "Lightroom",
+              ].map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-border bg-card/70 px-2 py-0.5 text-[9px] font-medium tracking-wide text-foreground backdrop-blur-sm md:px-2.5 md:py-1 md:text-[10px]"
+                >
+                  {t}
+                </span>
+              ))}
             </div>
           </TileLink>
 
-          <TileLink
-            to="/labs"
-            className="col-span-6 row-span-2 md:col-span-3 md:row-span-4"
-          >
-            <TileHead
-              label="02 · Primary"
-              Icon={FlaskConical}
-              title="Labs"
-              subtitle="Sessional benchwork."
-            />
+          <TileLink to="/labs" className="col-span-6 row-span-2 md:col-span-3 md:row-span-3">
+            <TileHead Icon={FlaskConical} title="Labs" subtitle="Sessional benchwork." />
             <div className="mt-auto grid grid-cols-2 gap-2 pt-3">
               <Metric value="12" label="Labs" />
               <Metric value="04" label="Semesters" />
@@ -142,42 +128,17 @@ function Index() {
 
           <TileLink
             to="/photography"
-            className="col-span-7 row-span-1 md:col-span-4 md:row-span-2"
+            className="col-span-6 row-span-1 md:col-span-4 md:row-span-3"
           >
-            <div className="flex h-full min-w-0 items-center gap-2 md:gap-3">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-foreground md:h-9 md:w-9">
-                <Camera className="h-4 w-4" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-                  Secondary
-                </p>
-                <p className="truncate font-display text-lg font-medium tracking-tight text-foreground md:text-xl">
-                  Photography
-                </p>
-              </div>
-              <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </div>
+            <CompactTile Icon={Camera} title="Photography" />
           </TileLink>
 
-          <TileLink
-            to="/blog"
-            className="col-span-5 row-span-1 md:col-span-3 md:row-span-2"
-          >
-            <div className="flex h-full min-w-0 items-center gap-2 md:gap-3">
-              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-foreground md:h-9 md:w-9">
-                <NotebookPen className="h-4 w-4" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[9px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-                  Journal
-                </p>
-                <p className="truncate font-display text-lg font-medium tracking-tight text-foreground md:text-xl">
-                  Blog
-                </p>
-              </div>
-              <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </div>
+          <TileLink to="/blog" className="col-span-3 row-span-1 md:col-span-2 md:row-span-3">
+            <CompactTile Icon={NotebookPen} title="Blog" />
+          </TileLink>
+
+          <TileLink to="/cv" className="col-span-3 row-span-1 md:col-span-1 md:row-span-3">
+            <CompactTile Icon={FileText} title="CV" />
           </TileLink>
         </div>
       </div>
@@ -185,16 +146,10 @@ function Index() {
   );
 }
 
-function Tile({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function Tile({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-md md:p-5 ${className}`}
+      className={`relative overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-md md:p-5 ${className}`}
     >
       {children}
     </div>
@@ -216,7 +171,7 @@ function TileLink({
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.985 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-4 backdrop-blur-md transition-colors group-hover:border-foreground/60 md:p-5"
+        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/70 p-3 backdrop-blur-md transition-colors group-hover:border-foreground/60 md:p-5"
       >
         {children}
       </motion.div>
@@ -225,12 +180,10 @@ function TileLink({
 }
 
 function TileHead({
-  label,
   Icon,
   title,
   subtitle,
 }: {
-  label: string;
   Icon: typeof Cpu;
   title: string;
   subtitle: string;
@@ -238,31 +191,42 @@ function TileHead({
   return (
     <div className="min-w-0">
       <div className="flex items-center justify-between gap-2">
-        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border text-foreground">
+        <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border md:h-9 md:w-9">
           <Icon className="h-4 w-4" />
         </span>
-        <span className="truncate text-[9px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
-          {label}
-        </span>
-      </div>
-      <div className="mt-4 flex items-baseline justify-between gap-3">
-        <h2 className="truncate font-display text-2xl font-medium tracking-tight text-foreground md:text-3xl">
-          {title}
-        </h2>
         <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
       </div>
-      <p className="mt-1 truncate text-xs text-muted-foreground md:text-sm">{subtitle}</p>
+      <div className="mt-3 md:mt-4">
+        <h2 className="truncate font-display text-xl font-medium tracking-tight text-foreground md:text-3xl">
+          {title}
+        </h2>
+        <p className="mt-1 truncate text-[11px] text-muted-foreground md:text-sm">{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+function CompactTile({ Icon, title }: { Icon: typeof Cpu; title: string }) {
+  return (
+    <div className="flex h-full min-w-0 items-center gap-2 md:gap-3">
+      <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-foreground md:h-9 md:w-9">
+        <Icon className="h-4 w-4" />
+      </span>
+      <p className="truncate font-display text-base font-medium tracking-tight text-foreground md:text-xl">
+        {title}
+      </p>
+      <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
     </div>
   );
 }
 
 function Metric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="min-w-0 rounded-xl border border-border bg-card/70 px-3 py-2 backdrop-blur-md">
-      <div className="font-display text-xl font-medium leading-none tracking-tight text-foreground">
+    <div className="min-w-0 rounded-xl border border-border bg-card/70 px-2.5 py-2 backdrop-blur-md md:px-3">
+      <div className="font-display text-lg font-medium leading-none tracking-tight text-foreground md:text-xl">
         {value}
       </div>
-      <div className="mt-1.5 truncate text-[9px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+      <div className="mt-1 truncate text-[8px] font-medium uppercase tracking-[0.24em] text-muted-foreground md:text-[9px]">
         {label}
       </div>
     </div>

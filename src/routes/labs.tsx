@@ -100,22 +100,63 @@ const statusDot: Record<Lab["status"], string> = {
 
 function Labs() {
   const [open, setOpen] = useState<string | null>("ETE 201");
+  const currentLab = labs.find((lab) => lab.status === "In Progress") ?? labs[0];
 
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
-        <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
-          / 03 — Hands on
-        </p>
-        <h1 className="mt-4 font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
+        <h1 className="font-display font-medium leading-[0.9] tracking-[-0.03em] text-foreground [font-size:clamp(3rem,9vw,7rem)]">
           Sessional Labs
         </h1>
-        <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          Benchwork from the ETE curriculum at CUET. Tap a row to expand.
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          Benchwork from the ETE curriculum at CUET, with objectives and tools captured per lab.
         </p>
       </FadeIn>
 
-      <ul className="mt-14 space-y-3">
+      <FadeIn delay={0.06}>
+        <section className="mt-8 grid grid-cols-1 gap-3 md:grid-cols-12 md:gap-4">
+          <div className="rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:col-span-4 md:p-6">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              Overview
+            </p>
+            <div className="mt-3 flex items-end gap-6">
+              <div>
+                <p className="font-display text-3xl font-medium tracking-tight text-foreground">04</p>
+                <p className="text-xs text-muted-foreground">Semesters</p>
+              </div>
+              <div>
+                <p className="font-display text-3xl font-medium tracking-tight text-foreground">
+                  {labs.length}
+                </p>
+                <p className="text-xs text-muted-foreground">Labs</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-muted-foreground">Focus: analog, digital, communication, DSP</p>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:col-span-8 md:p-6">
+            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              Current lab
+            </p>
+            <h2 className="mt-2 font-display text-2xl font-medium tracking-tight text-foreground">
+              {currentLab.code} — {currentLab.title}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{currentLab.summary}</p>
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {currentLab.tools.slice(0, 4).map((tool) => (
+                <span
+                  key={tool}
+                  className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground"
+                >
+                  {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      </FadeIn>
+
+      <ul className="mt-10 space-y-3">
         {labs.map((lab, i) => {
           const isOpen = open === lab.code;
           return (
@@ -128,19 +169,17 @@ function Labs() {
                 className="group flex w-full items-center gap-4 px-5 py-5 text-left focus-visible:outline-none md:gap-8 md:px-8 md:py-7"
                 aria-expanded={isOpen}
               >
-                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground shrink-0 md:w-12">
+                <span className="shrink-0 font-mono text-[11px] font-medium uppercase tracking-[0.25em] text-muted-foreground md:w-12">
                   0{i + 1}
                 </span>
-                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground shrink-0 md:w-24">
+                <span className="shrink-0 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground md:w-24">
                   {lab.code}
                 </span>
                 <span className="min-w-0 flex-1">
                   <h2 className="truncate font-display text-xl font-medium tracking-tight text-foreground md:text-2xl">
                     {lab.title}
                   </h2>
-                  <p className="mt-1 hidden text-sm text-muted-foreground md:block">
-                    {lab.summary}
-                  </p>
+                  <p className="mt-1 hidden text-sm text-muted-foreground md:block">{lab.summary}</p>
                 </span>
                 <span className="hidden items-center gap-2 md:flex">
                   <span className={`h-1.5 w-1.5 rounded-full ${statusDot[lab.status]}`} />
@@ -171,9 +210,7 @@ function Labs() {
                         <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
                           Objective
                         </p>
-                        <p className="mt-2 text-sm leading-relaxed text-foreground">
-                          {lab.objective}
-                        </p>
+                        <p className="mt-2 text-sm leading-relaxed text-foreground">{lab.objective}</p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground md:hidden">
                           {lab.summary}
                         </p>
@@ -201,7 +238,7 @@ function Labs() {
                           {lab.tags.map((t) => (
                             <li
                               key={t}
-                              className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-accent-foreground"
+                              className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground"
                             >
                               {t}
                             </li>
