@@ -24,9 +24,6 @@ export const Route = createFileRoute("/photography")({
 });
 
 function Photography() {
-  const heroSingle = singles[0];
-  const heroStory = stories[0];
-
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
@@ -34,70 +31,31 @@ function Photography() {
           Photography
         </h1>
         <p className="mt-6 max-w-2xl text-base font-semibold leading-relaxed text-muted-foreground md:text-lg">
-          Two tracks: single frames and short stories. Browse quickly here, then open each section
-          for the full set.
+          Two tracks: single frames and short stories. Browse the rolling previews below, and click to explore the full galleries.
         </p>
       </FadeIn>
 
-      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-5">
-        <FadeIn className="md:col-span-7">
-          <article className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md">
-            <img
-              src={heroSingle.src}
-              alt={heroSingle.title}
-              className="aspect-[16/9] w-full object-cover"
-            />
-            <div className="p-5 md:p-6">
-              <p className="text-xs text-muted-foreground">Featured single frame</p>
-              <h2 className="mt-1 font-display text-2xl font-medium tracking-tight text-foreground">
-                {heroSingle.title}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {heroSingle.location} · {heroSingle.year}
-              </p>
-            </div>
-          </article>
-        </FadeIn>
-
-        <FadeIn className="md:col-span-5" delay={0.05}>
-          <article className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md">
-            <img
-              src={heroStory.src}
-              alt={heroStory.title}
-              className="aspect-[16/9] w-full object-cover"
-            />
-            <div className="p-5 md:p-6">
-              <p className="text-xs text-muted-foreground">Featured photo story</p>
-              <h2 className="mt-1 font-display text-2xl font-medium tracking-tight text-foreground">
-                {heroStory.title}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">{heroStory.story}</p>
-            </div>
-          </article>
-        </FadeIn>
-      </div>
-
-      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-        <SectionPreview
+      <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+        <InteractivePreviewCard
           to="/photography/singles"
-          title="Single Photo"
-          subtitle="Standalone frames"
+          title="Single Category"
+          subtitle="Standalone frames captured in quiet moments."
           Icon={Images}
-          items={singles.map((item) => ({ id: item.id, src: item.src, title: item.title }))}
+          items={singles}
         />
-        <SectionPreview
+        <InteractivePreviewCard
           to="/photography/stories"
           title="Photo Story"
-          subtitle="Grouped visual narratives"
+          subtitle="Grouped visual narratives and thematic collections."
           Icon={LibraryBig}
-          items={stories.map((item) => ({ id: item.id, src: item.src, title: item.title }))}
+          items={stories}
         />
       </div>
     </div>
   );
 }
 
-function SectionPreview({
+function InteractivePreviewCard({
   to,
   title,
   subtitle,
@@ -110,35 +68,57 @@ function SectionPreview({
   Icon: typeof Images;
   items: { id: string; src: string; title: string }[];
 }) {
+  // Multiply the items array to ensure the auto-scroll loop is seamless on wide screens
+  const marqueeItems = [...items, ...items, ...items, ...items];
+
   return (
-    <FadeIn>
+    <FadeIn delay={0.1}>
       <Link to={to} className="group block focus-visible:outline-none">
         <motion.section
           {...cardPress}
-          className="rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md transition-colors group-hover:border-foreground/60 md:p-6"
+          className="relative flex h-[450px] flex-col overflow-hidden rounded-3xl border border-border bg-card/70 backdrop-blur-md transition-colors group-hover:border-foreground/60"
         >
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border">
-              <Icon className="h-4 w-4 text-foreground" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="truncate font-display text-2xl font-medium tracking-tight text-foreground">
-                {title}
-              </h2>
-              <p className="text-sm text-muted-foreground">{subtitle}</p>
+          {/* Static Header Information */}
+          <div className="relative z-10 flex items-start justify-between border-b border-border/50 bg-card/70 p-6 backdrop-blur-md md:p-8">
+            <div className="flex items-center gap-4">
+              <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background/50">
+                <Icon className="h-5 w-5 text-foreground" />
+              </span>
+              <div>
+                <h2 className="font-display text-2xl font-medium tracking-tight text-foreground md:text-3xl">
+                  {title}
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>
+              </div>
             </div>
-            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+            <ArrowUpRight className="h-6 w-6 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-foreground" />
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-2">
-            {items.slice(0, 3).map((item) => (
-              <img
-                key={item.id}
-                src={item.src}
-                alt={item.title}
-                className="aspect-square w-full rounded-lg object-cover"
-              />
-            ))}
+          {/* Auto-Scrolling Image Marquee */}
+          <div className="relative flex-1 overflow-hidden bg-background/30 py-6">
+            {/* Soft gradient fades on the left and right edges */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-card/80 to-transparent md:w-24" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-card/80 to-transparent md:w-24" />
+
+            {/* Scrolling Track */}
+            <motion.div
+              className="flex w-max items-center gap-4 px-4"
+              animate={{ x: ["0%", "-25%"] }} // Translates exactly one array length seamlessly
+              transition={{
+                duration: 20, // Adjust this higher for slower scroll, lower for faster
+                ease: "linear",
+                repeat: Infinity,
+              }}
+            >
+              {marqueeItems.map((item, idx) => (
+                <img
+                  key={`${item.id}-${idx}`}
+                  src={item.src}
+                  alt={item.title}
+                  className="aspect-[4/3] h-48 w-64 shrink-0 rounded-xl object-cover shadow-sm md:h-56 md:w-72"
+                />
+              ))}
+            </motion.div>
           </div>
         </motion.section>
       </Link>
