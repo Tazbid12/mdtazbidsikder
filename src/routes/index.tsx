@@ -44,7 +44,7 @@ const socials = [
 
 function Index() {
   return (
-    <div className="relative overflow-hidden" style={{ height: "calc(100svh - 4rem)" }}>
+    <div className="relative overflow-hidden" style={{ height: "calc(100svh - 4rem - 12px)" }}>
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
         <div className="flex shrink-0 items-center justify-between text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
           <span>Portfolio · 2026</span>
@@ -100,14 +100,7 @@ function Index() {
           <TileLink to="/skills" className="col-span-6 row-span-2 md:col-span-4 md:row-span-3">
             <TileHead Icon={Cpu} title="Skills" subtitle="Circuits, code, craft." />
             <div className="mt-4 flex flex-wrap gap-1.5">
-              {[
-                "Embedded",
-                "Signals",
-                "C/C++",
-                "Python",
-                "MATLAB",
-                "Lightroom",
-              ].map((t) => (
+              {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map((t) => (
                 <span
                   key={t}
                   className="rounded-full border border-border bg-card/70 px-2 py-0.5 text-[9px] font-medium tracking-wide text-foreground backdrop-blur-sm md:px-2.5 md:py-1 md:text-[10px]"
@@ -126,10 +119,7 @@ function Index() {
             </div>
           </TileLink>
 
-          <TileLink
-            to="/photography"
-            className="col-span-6 row-span-1 md:col-span-4 md:row-span-3"
-          >
+          <TileLink to="/photography" className="col-span-6 row-span-1 md:col-span-4 md:row-span-3">
             <CompactTile Icon={Camera} title="Photography" />
           </TileLink>
 

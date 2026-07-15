@@ -229,9 +229,11 @@ export function SpiderWeb({
 
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     if (isTouch) {
-      const DOE = (window as unknown as {
-        DeviceOrientationEvent?: { requestPermission?: () => Promise<string> };
-      }).DeviceOrientationEvent;
+      const DOE = (
+        window as unknown as {
+          DeviceOrientationEvent?: { requestPermission?: () => Promise<string> };
+        }
+      ).DeviceOrientationEvent;
       if (DOE && typeof DOE.requestPermission === "function") {
         DOE.requestPermission()
           .then((res) => {

@@ -121,7 +121,9 @@ function Labs() {
             </p>
             <div className="mt-3 flex items-end gap-6">
               <div>
-                <p className="font-display text-3xl font-medium tracking-tight text-foreground">04</p>
+                <p className="font-display text-3xl font-medium tracking-tight text-foreground">
+                  04
+                </p>
                 <p className="text-xs text-muted-foreground">Semesters</p>
               </div>
               <div>
@@ -131,7 +133,9 @@ function Labs() {
                 <p className="text-xs text-muted-foreground">Labs</p>
               </div>
             </div>
-            <p className="mt-4 text-sm text-muted-foreground">Focus: analog, digital, communication, DSP</p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Focus: analog, digital, communication, DSP
+            </p>
           </div>
 
           <div className="rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:col-span-8 md:p-6">
@@ -141,7 +145,9 @@ function Labs() {
             <h2 className="mt-2 font-display text-2xl font-medium tracking-tight text-foreground">
               {currentLab.code} — {currentLab.title}
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{currentLab.summary}</p>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {currentLab.summary}
+            </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {currentLab.tools.slice(0, 4).map((tool) => (
                 <span
@@ -179,7 +185,9 @@ function Labs() {
                   <h2 className="truncate font-display text-xl font-medium tracking-tight text-foreground md:text-2xl">
                     {lab.title}
                   </h2>
-                  <p className="mt-1 hidden text-sm text-muted-foreground md:block">{lab.summary}</p>
+                  <p className="mt-1 hidden text-sm text-muted-foreground md:block">
+                    {lab.summary}
+                  </p>
                 </span>
                 <span className="hidden items-center gap-2 md:flex">
                   <span className={`h-1.5 w-1.5 rounded-full ${statusDot[lab.status]}`} />
@@ -210,7 +218,9 @@ function Labs() {
                         <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-muted-foreground">
                           Objective
                         </p>
-                        <p className="mt-2 text-sm leading-relaxed text-foreground">{lab.objective}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-foreground">
+                          {lab.objective}
+                        </p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground md:hidden">
                           {lab.summary}
                         </p>

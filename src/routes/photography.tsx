@@ -34,8 +34,8 @@ function Photography() {
           Photography
         </h1>
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          Two tracks: single frames and short stories. Browse quickly here, then open each
-          section for the full set.
+          Two tracks: single frames and short stories. Browse quickly here, then open each section
+          for the full set.
         </p>
       </FadeIn>
 
@@ -61,7 +61,11 @@ function Photography() {
 
         <FadeIn className="md:col-span-5" delay={0.05}>
           <article className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md">
-            <img src={heroStory.src} alt={heroStory.title} className="aspect-[16/9] w-full object-cover" />
+            <img
+              src={heroStory.src}
+              alt={heroStory.title}
+              className="aspect-[16/9] w-full object-cover"
+            />
             <div className="p-5 md:p-6">
               <p className="text-xs text-muted-foreground">Featured photo story</p>
               <h2 className="mt-1 font-display text-2xl font-medium tracking-tight text-foreground">

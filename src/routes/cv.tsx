@@ -42,8 +42,7 @@ function CV() {
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
           Electronics &amp; Telecommunication Engineering student at CUET focused on circuits,
-          communication systems, embedded development, and visual storytelling through
-          photography.
+          communication systems, embedded development, and visual storytelling through photography.
         </p>
       </FadeIn>
 
@@ -114,7 +113,9 @@ function InfoCard({
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border">
           <Icon className="h-4 w-4 text-foreground" />
         </span>
-        <h2 className="mt-5 font-display text-2xl font-medium tracking-tight text-foreground">{title}</h2>
+        <h2 className="mt-5 font-display text-2xl font-medium tracking-tight text-foreground">
+          {title}
+        </h2>
         <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted-foreground">
           {points.map((point) => (
             <li key={point}>{point}</li>
