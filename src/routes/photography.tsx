@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { ArrowUpRight, Images, LibraryBig } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
 import { cardPress } from "../lib/motion";
@@ -24,6 +24,15 @@ export const Route = createFileRoute("/photography")({
 });
 
 function Photography() {
+  // Check the current URL to see if we are on the main page or a sub-page
+  const location = useLocation();
+  const isMainPage = location.pathname === "/photography" || location.pathname === "/photography/";
+
+  // If we are on a sub-page (/singles or /stories), render that specific page instead of the menu
+  if (!isMainPage) {
+    return <Outlet />;
+  }
+
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
