@@ -1,27 +1,34 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Interactive spider-web particle network.
- * - Desktop: gradient blur follows mouse; nearby nodes are pulled toward it.
- * - Mobile: DeviceOrientation (gyroscope) shifts the field for 3D parallax.
- *
- * Particles are spawned across an oversized virtual field (viewport + overscan)
- * so mouse pulls and device tilt never expose empty edges.
+ * Throttles high-frequency events (like scroll, mousemove, gyro) 
+ * to prevent main thread blocking.
  */
+function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
+  let inThrottle: boolean;
+  return function (this: any, ...args: any[]) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
+  } as T;
+}
+
 export function SpiderWeb({
   color = "#222222",
-  density = 0.00042,
-  linkDistance = 170,
+  density = 0.0003, // Slightly reduced base density
+  linkDistance = 120, // Reduced from 170 for a cleaner, less messy look
   nodeRadius = 1.9,
-  linkAlpha = 0.42,
+  linkAlpha = 0.35,
   nodeAlpha = 0.7,
   mouseRadius = 260,
   mousePull = 13,
   tiltStrength = 72,
-  blurPx = 2,
+  blurPx = 0, // Removed blur by default to improve rendering performance
   className = "",
   positionClass = "fixed",
-  overscan = 280,
+  overscan = 150, // Reduced off-screen rendering to save memory
 }: {
   color?: string;
   density?: number;
@@ -92,7 +99,12 @@ export function SpiderWeb({
       const fieldW = fieldMaxX - fieldMinX;
       const fieldH = fieldMaxY - fieldMinY;
 
-      const count = Math.max(100, Math.min(400, Math.floor(fieldW * fieldH * density)));
+      // MOBILE OPTIMIZATION: Drastically cut particle counts on small screens
+      const isMobile = window.innerWidth < 768;
+      const maxParticles = isMobile ? 60 : 150; 
+      
+      const count = Math.max(40, Math.min(maxParticles, Math.floor(fieldW * fieldH * density)));
+      
       particles = Array.from({ length: count }, () => {
         const x = fieldMinX + Math.random() * fieldW;
         const y = fieldMinY + Math.random() * fieldH;
@@ -101,38 +113,41 @@ export function SpiderWeb({
           y,
           bx: x,
           by: y,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
+          vx: (Math.random() - 0.5) * 0.25, // Slightly slowed down baseline movement
+          vy: (Math.random() - 0.5) * 0.25,
         };
       });
     };
 
-    const onMouse = (e: MouseEvent) => {
+    // Throttled event listeners (16ms = ~60fps)
+    const onMouse = throttle((e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.y = e.clientY - rect.top;
       mouseRef.current.active = true;
-    };
+    }, 16);
+
     const onLeave = () => {
       mouseRef.current.active = false;
       mouseRef.current.x = -9999;
       mouseRef.current.y = -9999;
     };
-    const onTouch = (e: TouchEvent) => {
+
+    const onTouch = throttle((e: TouchEvent) => {
       if (e.touches.length === 0) return;
       const rect = canvas.getBoundingClientRect();
       const t = e.touches[0];
       mouseRef.current.x = t.clientX - rect.left;
       mouseRef.current.y = t.clientY - rect.top;
       mouseRef.current.active = true;
-    };
+    }, 16);
 
-    const onOrient = (e: DeviceOrientationEvent) => {
+    const onOrient = throttle((e: DeviceOrientationEvent) => {
       const g = (e.gamma ?? 0) / 18;
       const b = ((e.beta ?? 0) - 30) / 18;
       tiltRef.current.x = Math.max(-2, Math.min(2, g));
       tiltRef.current.y = Math.max(-2, Math.min(2, b));
-    };
+    }, 16);
 
     const draw = () => {
       const mx = mouseRef.current.x;
@@ -142,9 +157,9 @@ export function SpiderWeb({
 
       ctx.clearRect(0, 0, width, height);
 
-      if (mouseRef.current.active) {
+      if (mouseRef.current.active && !window.matchMedia("(pointer: coarse)").matches) {
         const grad = ctx.createRadialGradient(mx, my, 0, mx, my, 340);
-        grad.addColorStop(0, `rgba(${rgb},0.14)`);
+        grad.addColorStop(0, `rgba(${rgb},0.08)`);
         grad.addColorStop(1, `rgba(${rgb},0)`);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, width, height);
@@ -156,7 +171,7 @@ export function SpiderWeb({
       for (const p of particles) {
         p.bx += p.vx;
         p.by += p.vy;
-        // Wrap around the oversized field so the mesh never depletes.
+        
         if (p.bx < fieldMinX) p.bx += fieldW;
         else if (p.bx > fieldMaxX) p.bx -= fieldW;
         if (p.by < fieldMinY) p.by += fieldH;
@@ -219,8 +234,13 @@ export function SpiderWeb({
     resize();
     draw();
 
-    const ro = new ResizeObserver(resize);
+    let resizeTimer: NodeJS.Timeout;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 100);
+    });
     ro.observe(canvas);
+
     window.addEventListener("mousemove", onMouse);
     window.addEventListener("mouseleave", onLeave);
     window.addEventListener("touchmove", onTouch, { passive: true });
@@ -250,6 +270,7 @@ export function SpiderWeb({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      clearTimeout(resizeTimer);
       window.removeEventListener("mousemove", onMouse);
       window.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("touchmove", onTouch);
