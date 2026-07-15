@@ -26,6 +26,7 @@ export const Route = createFileRoute("/skills")({
 
 type Group = {
   Icon: typeof Cpu;
+  id: string;
   label: string;
   title: string;
   blurb: string;
@@ -36,6 +37,7 @@ type Group = {
 const groups: Group[] = [
   {
     Icon: Cpu,
+    id: "electronics-communication",
     label: "Core discipline",
     title: "Electronics & Communication",
     blurb: "Circuits, signals, and systems — the theory behind every board I've ever soldered.",
@@ -51,6 +53,7 @@ const groups: Group[] = [
   },
   {
     Icon: Code2,
+    id: "code",
     label: "Programming",
     title: "Code",
     blurb: "Comfortable moving between low-level firmware and higher-level scripts.",
@@ -59,6 +62,7 @@ const groups: Group[] = [
   },
   {
     Icon: Camera,
+    id: "photography",
     label: "Craft",
     title: "Photography",
     blurb: "Frames, light, and the patience to wait for both.",
@@ -67,6 +71,7 @@ const groups: Group[] = [
   },
   {
     Icon: Wrench,
+    id: "tools-extras",
     label: "Toolkit",
     title: "Tools & extras",
     blurb: "The small things that keep the work moving.",
@@ -76,6 +81,7 @@ const groups: Group[] = [
 ];
 
 const highlights = ["Embedded systems", "Communication theory", "Python + C/C++", "Lightroom"];
+const allSkills = groups.flatMap((group) => group.items.map((item) => ({ item, groupId: group.id })));
 
 function Skills() {
   return (
@@ -108,12 +114,32 @@ function Skills() {
         </section>
       </FadeIn>
 
+      <FadeIn delay={0.08}>
+        <section className="mt-4 rounded-2xl border border-border bg-card/70 p-5 backdrop-blur-md md:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-foreground">
+            At-a-glance overview
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {allSkills.map(({ item, groupId }) => (
+              <a
+                key={item}
+                href={`#${groupId}`}
+                className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold tracking-wide text-foreground transition-colors hover:border-foreground/60"
+              >
+                {item}
+              </a>
+            ))}
+          </div>
+        </section>
+      </FadeIn>
+
       <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-4 md:gap-5">
         {groups.map((g, i) => (
           <FadeIn key={g.title} delay={i * 0.06} className={g.span}>
             <motion.article
+              id={g.id}
               {...cardPress}
-              className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-md md:p-8"
+              className="group scroll-mt-24 flex h-full flex-col justify-between rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-md md:p-8"
             >
               <div>
                 <div className="flex items-center justify-between">
@@ -127,7 +153,7 @@ function Skills() {
                 <h2 className="mt-6 font-display text-2xl font-medium tracking-tight text-card-foreground md:text-3xl">
                   {g.title}
                 </h2>
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-3 max-w-md text-sm font-semibold leading-relaxed text-foreground/85">
                   {g.blurb}
                 </p>
               </div>
