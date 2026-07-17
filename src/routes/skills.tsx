@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Cpu, Code2, Camera, Wrench, LucideIcon } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
 import { cardPress } from "../lib/motion";
-import { sanityClient } from "../lib/sanity";
+import { sanityClient } from "../sanity";
 
 // Map strings from Sanity to actual Lucide components
 const iconMap: Record<string, LucideIcon> = {
