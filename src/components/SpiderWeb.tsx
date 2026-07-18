@@ -1,48 +1,19 @@
 import { useEffect, useRef } from "react";
 
-/**
- * Throttles high-frequency events (like scroll, mousemove, gyro) 
- * to prevent main thread blocking.
- */
-function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
-  let inThrottle: boolean;
-  return function (this: any, ...args: any[]) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  } as T;
-}
-
 export function SpiderWeb({
   color = "#222222",
-  density = 0.0003, // Slightly reduced base density
-  linkDistance = 120, // Reduced from 170 for a cleaner, less messy look
-  nodeRadius = 1.9,
-  linkAlpha = 0.35,
-  nodeAlpha = 0.7,
-  mouseRadius = 260,
-  mousePull = 13,
-  tiltStrength = 72,
-  blurPx = 0, // Removed blur by default to improve rendering performance
+  linkDistance = 140, // Perfect distance for a structured look
+  nodeRadius = 1.5,
+  linkAlpha = 0.25, // Subtle lines
+  nodeAlpha = 0.6,
   className = "",
-  positionClass = "fixed",
-  overscan = 150, // Reduced off-screen rendering to save memory
 }: {
   color?: string;
-  density?: number;
   linkDistance?: number;
   nodeRadius?: number;
   linkAlpha?: number;
   nodeAlpha?: number;
-  mouseRadius?: number;
-  mousePull?: number;
-  tiltStrength?: number;
-  blurPx?: number;
   className?: string;
-  positionClass?: "fixed" | "absolute";
-  overscan?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
@@ -50,7 +21,6 @@ export function SpiderWeb({
     y: -9999,
     active: false,
   });
-  const tiltRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -60,21 +30,18 @@ export function SpiderWeb({
 
     let width = 0;
     let height = 0;
-    let fieldMinX = 0;
-    let fieldMaxX = 0;
-    let fieldMinY = 0;
-    let fieldMaxY = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    
+    // Nodes have an origin to spring back to
     let particles: {
       x: number;
       y: number;
-      vx: number;
-      vy: number;
-      bx: number;
-      by: number;
+      originX: number;
+      originY: number;
     }[] = [];
     let raf = 0;
 
+    // Convert hex color to rgb for alpha manipulation
     const rgb = (() => {
       const m = color.match(/^#([0-9a-f]{6})$/i);
       if (m) {
@@ -84,135 +51,83 @@ export function SpiderWeb({
       return "34,34,34";
     })();
 
+    const generateParticles = () => {
+      const area = width * height;
+      // Responsive density: less nodes on mobile, spread out cleanly on desktop
+      const isMobile = width < 768;
+      const count = isMobile ? Math.floor(area / 12000) : Math.floor(area / 18000);
+      
+      particles = Array.from({ length: Math.min(count, 150) }, () => {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        return { x, y, originX: x, originY: y };
+      });
+    };
+
+    let lastWidth = 0;
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
+      
+      // ONLY regenerate if the width changes significantly to prevent the "scroll shuffle"
+      const widthChanged = Math.abs(rect.width - lastWidth) > 50;
+      
       width = rect.width;
       height = rect.height;
+      lastWidth = width;
+
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      fieldMinX = -overscan;
-      fieldMaxX = width + overscan;
-      fieldMinY = -overscan;
-      fieldMaxY = height + overscan;
-      const fieldW = fieldMaxX - fieldMinX;
-      const fieldH = fieldMaxY - fieldMinY;
-
-      // MOBILE OPTIMIZATION: Drastically cut particle counts on small screens
-      const isMobile = window.innerWidth < 768;
-      const maxParticles = isMobile ? 60 : 150; 
-      
-      const count = Math.max(40, Math.min(maxParticles, Math.floor(fieldW * fieldH * density)));
-      
-      particles = Array.from({ length: count }, () => {
-        const x = fieldMinX + Math.random() * fieldW;
-        const y = fieldMinY + Math.random() * fieldH;
-        return {
-          x,
-          y,
-          bx: x,
-          by: y,
-          vx: (Math.random() - 0.5) * 0.25, // Slightly slowed down baseline movement
-          vy: (Math.random() - 0.5) * 0.25,
-        };
-      });
+      if (widthChanged || particles.length === 0) {
+        generateParticles();
+      }
     };
-
-    // Throttled event listeners (16ms = ~60fps)
-    const onMouse = throttle((e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current.x = e.clientX - rect.left;
-      mouseRef.current.y = e.clientY - rect.top;
-      mouseRef.current.active = true;
-    }, 16);
-
-    const onLeave = () => {
-      mouseRef.current.active = false;
-      mouseRef.current.x = -9999;
-      mouseRef.current.y = -9999;
-    };
-
-    const onTouch = throttle((e: TouchEvent) => {
-      if (e.touches.length === 0) return;
-      const rect = canvas.getBoundingClientRect();
-      const t = e.touches[0];
-      mouseRef.current.x = t.clientX - rect.left;
-      mouseRef.current.y = t.clientY - rect.top;
-      mouseRef.current.active = true;
-    }, 16);
-
-    const onOrient = throttle((e: DeviceOrientationEvent) => {
-      const g = (e.gamma ?? 0) / 18;
-      const b = ((e.beta ?? 0) - 30) / 18;
-      tiltRef.current.x = Math.max(-2, Math.min(2, g));
-      tiltRef.current.y = Math.max(-2, Math.min(2, b));
-    }, 16);
 
     const draw = () => {
-      const mx = mouseRef.current.x;
-      const my = mouseRef.current.y;
-      const tiltX = tiltRef.current.x * tiltStrength;
-      const tiltY = tiltRef.current.y * tiltStrength;
-
       ctx.clearRect(0, 0, width, height);
 
-      if (mouseRef.current.active && !window.matchMedia("(pointer: coarse)").matches) {
-        const grad = ctx.createRadialGradient(mx, my, 0, mx, my, 340);
-        grad.addColorStop(0, `rgba(${rgb},0.08)`);
-        grad.addColorStop(1, `rgba(${rgb},0)`);
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, width, height);
-      }
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
+      const mouseActive = mouseRef.current.active;
 
-      const fieldW = fieldMaxX - fieldMinX;
-      const fieldH = fieldMaxY - fieldMinY;
-
+      // Update positions with Spring Physics
       for (const p of particles) {
-        p.bx += p.vx;
-        p.by += p.vy;
-        
-        if (p.bx < fieldMinX) p.bx += fieldW;
-        else if (p.bx > fieldMaxX) p.bx -= fieldW;
-        if (p.by < fieldMinY) p.by += fieldH;
-        else if (p.by > fieldMaxY) p.by -= fieldH;
+        let targetX = p.originX;
+        let targetY = p.originY;
 
-        const depth = 0.5 + ((p.bx + p.by) % 100) / 140;
-        let x = p.bx + tiltX * depth;
-        let y = p.by + tiltY * depth;
-
-        if (mouseRef.current.active) {
-          const dx = mx - x;
-          const dy = my - y;
-          const d2 = dx * dx + dy * dy;
-          const R = mouseRadius;
-          if (d2 < R * R) {
-            const d = Math.sqrt(d2) || 1;
-            const f = (1 - d / R) * mousePull;
-            x += (dx / d) * f;
-            y += (dy / d) * f;
+        if (mouseActive) {
+          const dx = mx - p.originX;
+          const dy = my - p.originY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // If mouse is near, gently repel the node
+          const interactionRadius = 120;
+          if (dist < interactionRadius) {
+            const force = (interactionRadius - dist) / interactionRadius;
+            targetX -= (dx / dist) * force * 30; // Push distance
+            targetY -= (dy / dist) * force * 30;
           }
         }
-        p.x = x;
-        p.y = y;
+
+        // Ease node towards target (smooth spring effect)
+        p.x += (targetX - p.x) * 0.1;
+        p.y += (targetY - p.y) * 0.1;
       }
 
-      const margin = linkDistance;
-      const visible = particles.filter(
-        (p) => p.x > -margin && p.x < width + margin && p.y > -margin && p.y < height + margin,
-      );
-
+      // Draw lines
       ctx.lineWidth = 1;
-      for (let i = 0; i < visible.length; i++) {
-        for (let j = i + 1; j < visible.length; j++) {
-          const a = visible[i];
-          const b = visible[j];
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const a = particles[i];
+          const b = particles[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
+          
           if (dist < linkDistance) {
             const alpha = (1 - dist / linkDistance) * linkAlpha;
-            ctx.strokeStyle = `rgba(${rgb},${alpha})`;
+            ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -221,8 +136,9 @@ export function SpiderWeb({
         }
       }
 
-      ctx.fillStyle = `rgba(${rgb},${nodeAlpha})`;
-      for (const p of visible) {
+      // Draw nodes
+      ctx.fillStyle = `rgba(${rgb}, ${nodeAlpha})`;
+      for (const p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, nodeRadius, 0, Math.PI * 2);
         ctx.fill();
@@ -234,71 +150,42 @@ export function SpiderWeb({
     resize();
     draw();
 
+    // Event Listeners
     let resizeTimer: NodeJS.Timeout;
-    const ro = new ResizeObserver(() => {
+    const handleResize = () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 100);
-    });
-    ro.observe(canvas);
+      resizeTimer = setTimeout(resize, 200);
+    };
+    
+    window.addEventListener("resize", handleResize);
+    
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
+      mouseRef.current.active = true;
+    };
+    
+    const onMouseLeave = () => {
+      mouseRef.current.active = false;
+    };
 
-    window.addEventListener("mousemove", onMouse);
-    window.addEventListener("mouseleave", onLeave);
-    window.addEventListener("touchmove", onTouch, { passive: true });
-    window.addEventListener("touchstart", onTouch, { passive: true });
-    window.addEventListener("touchend", onLeave);
-
-    const isTouch = window.matchMedia("(pointer: coarse)").matches;
-    if (isTouch) {
-      const DOE = (
-        window as unknown as {
-          DeviceOrientationEvent?: { requestPermission?: () => Promise<string> };
-        }
-      ).DeviceOrientationEvent;
-      if (DOE && typeof DOE.requestPermission === "function") {
-        DOE.requestPermission()
-          .then((res) => {
-            if (res === "granted") {
-              window.addEventListener("deviceorientation", onOrient);
-            }
-          })
-          .catch(() => {});
-      } else {
-        window.addEventListener("deviceorientation", onOrient);
-      }
-    }
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
       cancelAnimationFrame(raf);
-      ro.disconnect();
       clearTimeout(resizeTimer);
-      window.removeEventListener("mousemove", onMouse);
-      window.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("touchmove", onTouch);
-      window.removeEventListener("touchstart", onTouch);
-      window.removeEventListener("touchend", onLeave);
-      window.removeEventListener("deviceorientation", onOrient);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
     };
-  }, [
-    color,
-    density,
-    linkDistance,
-    nodeRadius,
-    linkAlpha,
-    nodeAlpha,
-    mouseRadius,
-    mousePull,
-    tiltStrength,
-    overscan,
-  ]);
-
-  const posClasses =
-    positionClass === "fixed" ? "fixed inset-0 h-full w-full" : "absolute inset-0 h-full w-full";
+  }, [color, linkDistance, nodeRadius, linkAlpha, nodeAlpha]);
 
   return (
     <canvas
       ref={canvasRef}
-      className={`pointer-events-none ${posClasses} ${className}`}
-      style={blurPx > 0 ? { filter: `blur(${blurPx}px)` } : undefined}
+      className={`fixed inset-0 h-full w-full pointer-events-none z-[-1] ${className}`}
       aria-hidden="true"
     />
   );
