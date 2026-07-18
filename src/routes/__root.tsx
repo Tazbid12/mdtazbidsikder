@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
+import { VisualEditing } from "@sanity/visual-editing";
 
 import "@fontsource/space-grotesk/400.css";
 import "@fontsource/space-grotesk/500.css";
@@ -148,6 +149,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <ThemedBackground isPhotography={isPhotography} />
+        {/* The visual editing listener that connects the live preview in Sanity */}
+        <VisualEditing />
         <div className="relative z-10 flex min-h-screen flex-col">
           <Header />
           <main className="flex-1 pt-16">
