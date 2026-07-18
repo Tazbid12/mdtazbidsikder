@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
-import { VisualEditing } from "@sanity/visual-editing";
+import { VisualEditing } from "@sanity/visual-editing/react";
 
 import "@fontsource/space-grotesk/400.css";
 import "@fontsource/space-grotesk/500.css";
