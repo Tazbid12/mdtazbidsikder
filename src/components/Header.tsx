@@ -10,7 +10,7 @@ const navLinks = [
   { to: "/labs", label: "Labs" },
   { to: "/photography", label: "Photography" },
   { to: "/blog", label: "Blog" },
-  { to: "/cv", label: "CV" },
+  { href: "YOUR_OVERLEAF_LINK_HERE", label: "CV", external: true },
 ];
 
 export function Header() {
@@ -25,18 +25,30 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              activeProps={{ className: "text-foreground" }}
-              inactiveProps={{ className: "text-muted-foreground" }}
-              activeOptions={{ exact: true }}
-              className="relative px-3 py-2 text-sm font-medium transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) =>
+            link.external ? (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.to!}
+                activeProps={{ className: "text-foreground" }}
+                inactiveProps={{ className: "text-muted-foreground" }}
+                activeOptions={{ exact: true }}
+                className="relative px-3 py-2 text-sm font-medium transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -67,19 +79,32 @@ export function Header() {
             className="border-t border-border/50 bg-background md:hidden"
           >
             <nav className="flex flex-col gap-1 px-6 py-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
-                  activeProps={{ className: "text-foreground" }}
-                  inactiveProps={{ className: "text-muted-foreground" }}
-                  activeOptions={{ exact: true }}
-                  className="py-2 text-sm font-medium transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) =>
+                link.external ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    to={link.to!}
+                    onClick={() => setMobileOpen(false)}
+                    activeProps={{ className: "text-foreground" }}
+                    inactiveProps={{ className: "text-muted-foreground" }}
+                    activeOptions={{ exact: true }}
+                    className="py-2 text-sm font-medium transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                )
+              )}
             </nav>
           </motion.div>
         )}
