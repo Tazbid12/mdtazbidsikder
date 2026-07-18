@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
+import { presentationTool } from 'sanity/presentation';
 import { schemaTypes } from './src/schemas';
 
 export default defineConfig({
@@ -8,7 +9,12 @@ export default defineConfig({
   projectId: 'jbds1kqs',
   dataset: 'production',
   basePath: '/admin',
-  plugins: [structureTool()],
+  plugins: [
+    structureTool(),
+    presentationTool({
+      previewUrl: '/', // This loads your live frontend inside the admin panel
+    }),
+  ],
   schema: {
     types: schemaTypes,
   },
