@@ -11,7 +11,6 @@ import {
   FileText,
 } from "lucide-react";
 import { SOCIALS } from "../lib/socials";
-import portraitAsset from "../assets/portrait.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,8 +27,8 @@ export const Route = createFileRoute("/")({
         content:
           "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
       },
-      { property: "og:image", content: portraitAsset.url },
-      { name: "twitter:image", content: portraitAsset.url },
+      { property: "og:image", content: "/portrait.jpg" },
+      { name: "twitter:image", content: "/portrait.jpg" },
     ],
   }),
   component: Index,
@@ -43,20 +42,22 @@ const socials = [
 
 function Index() {
   return (
-    <div className="relative min-h-[calc(100svh-4rem-12px)] overflow-x-hidden">
-      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6">
-        <div className="flex shrink-0 items-center justify-between text-xs uppercase tracking-[0.24em] text-muted-foreground md:text-[13px]">
-          <span className="font-bold text-foreground">Portfolio · 2026</span>
-          <span className="hidden sm:inline font-medium">Chattogram, BD · 22°N 91°E</span>
-          <span className="font-bold text-foreground">ETE / CUET</span>
+    <div className="relative min-h-[calc(100svh-4rem-12px)] overflow-x-hidden flex flex-col">
+      <div className="relative z-10 mx-auto flex min-h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6 flex-1">
+        
+        {/* TOP HEADER */}
+        <div className="flex shrink-0 items-center justify-start text-xs uppercase tracking-[0.24em] text-foreground/70 md:text-[13px]">
+          <span className="font-bold text-foreground">Portfolio · Tazbid</span>
         </div>
 
-        <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-2 md:mt-4 md:grid-cols-12 md:grid-rows-6 md:gap-3">
+        {/* MAIN GRID - Constrained height on desktop to prevent scrolling */}
+        <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-2 md:mt-4 md:grid-cols-12 md:grid-rows-6 md:gap-3 md:h-[calc(100vh-8rem)]">
+          
           <Tile className="md:col-span-5 md:row-span-6">
             <div className="flex h-full min-w-0 flex-col gap-2 md:gap-3">
               <div className="flex items-start gap-3 md:gap-4">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-muted-foreground">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-foreground/70">
                     Md. Tazbid Sikder
                   </p>
                   <h1 className="mt-2 font-display font-semibold leading-[1.05] tracking-[-0.02em] text-foreground [font-size:clamp(1.2rem,2.3vw,2.4rem)]">
@@ -65,16 +66,18 @@ function Index() {
                     capturing quiet frames.
                   </h1>
                 </div>
+                {/* PROFILE PICTURE */}
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border md:h-24 md:w-24">
                   <img
-                    src={portraitAsset.url}
+                    src="/portrait.jpg"
                     alt="Md. Tazbid Sikder"
                     className="h-full w-full object-cover grayscale"
                   />
                 </div>
               </div>
 
-              <p className="max-w-md text-[12px] font-medium leading-relaxed text-muted-foreground md:text-sm">
+              {/* BIO TEXT - Increased visibility */}
+              <p className="max-w-md text-[13px] font-semibold leading-relaxed text-foreground/80 md:text-sm">
                 Electronics &amp; Telecommunication Engineering student at CUET. Building systems
                 and circuits, while capturing quiet frames as a passionate photographer.
               </p>
@@ -102,7 +105,7 @@ function Index() {
               {["Embedded", "Signals", "C/C++", "Python", "MATLAB", "Lightroom"].map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-border bg-card/50 px-2 py-0.5 text-[9px] font-semibold tracking-wide text-foreground md:px-2.5 md:py-1 md:text-[10px]"
+                  className="rounded-full border border-border bg-card/50 px-2 py-0.5 text-[9px] font-bold tracking-wide text-foreground md:px-2.5 md:py-1 md:text-[10px]"
                 >
                   {t}
                 </span>
@@ -179,13 +182,13 @@ function TileHead({
         <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border md:h-9 md:w-9">
           <Icon className="h-4 w-4" />
         </span>
-        <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+        <ArrowUpRight className="h-4 w-4 shrink-0 text-foreground/70 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
       </div>
       <div className="mt-3 md:mt-4">
-        <h2 className="truncate font-display text-xl font-semibold tracking-tight text-foreground md:text-3xl">
+        <h2 className="truncate font-display text-xl font-bold tracking-tight text-foreground md:text-3xl">
           {title}
         </h2>
-        <p className="mt-1 truncate text-[11px] font-medium text-muted-foreground md:text-sm">{subtitle}</p>
+        <p className="mt-1 truncate text-[11px] font-semibold text-foreground/70 md:text-sm">{subtitle}</p>
       </div>
     </div>
   );
@@ -197,10 +200,10 @@ function CompactTile({ Icon, title }: { Icon: typeof Cpu; title: string }) {
       <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-foreground md:h-9 md:w-9">
         <Icon className="h-4 w-4" />
       </span>
-      <p className="truncate font-display text-base font-semibold tracking-tight text-foreground md:text-xl">
+      <p className="truncate font-display text-base font-bold tracking-tight text-foreground md:text-xl">
         {title}
       </p>
-      <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
+      <ArrowUpRight className="ml-auto h-4 w-4 shrink-0 text-foreground/70" />
     </div>
   );
 }
@@ -208,10 +211,10 @@ function CompactTile({ Icon, title }: { Icon: typeof Cpu; title: string }) {
 function Metric({ value, label }: { value: string; label: string }) {
   return (
     <div className="min-w-0 rounded-xl border border-border bg-card/50 px-2.5 py-2 md:px-3">
-      <div className="font-display text-lg font-semibold leading-none tracking-tight text-foreground md:text-xl">
+      <div className="font-display text-lg font-bold leading-none tracking-tight text-foreground md:text-xl">
         {value}
       </div>
-      <div className="mt-1 truncate text-[8px] font-semibold uppercase tracking-[0.24em] text-muted-foreground md:text-[9px]">
+      <div className="mt-1 truncate text-[8px] font-bold uppercase tracking-[0.24em] text-foreground/70 md:text-[9px]">
         {label}
       </div>
     </div>
