@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
 import { VisualEditing } from "@sanity/visual-editing/react";
 
@@ -145,12 +145,19 @@ function RootComponent() {
   const isHome = pathname === "/";
   const isPhotography = pathname.startsWith("/photography");
 
+  // Security check: Verify if the site is loaded inside the Sanity Admin iframe
+  const [isIframe, setIsIframe] = useState(false);
+
+  useEffect(() => {
+    setIsIframe(window.self !== window.top);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <ThemedBackground isPhotography={isPhotography} />
-        {/* The visual editing listener that connects the live preview in Sanity */}
-        <VisualEditing />
+        {/* Only turns on Visual Editing if you are safe inside your admin panel */}
+        {isIframe && <VisualEditing />}
         <div className="relative z-10 flex min-h-screen flex-col">
           <Header />
           <main className="flex-1 pt-16">
