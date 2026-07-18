@@ -45,12 +45,10 @@ function Index() {
     <div className="relative min-h-[calc(100svh-4rem-12px)] overflow-x-hidden flex flex-col">
       <div className="relative z-10 mx-auto flex min-h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6 flex-1">
         
-        {/* TOP HEADER */}
         <div className="flex shrink-0 items-center justify-start text-xs uppercase tracking-[0.24em] text-foreground/70 md:text-[13px]">
           <span className="font-bold text-foreground">Portfolio · Tazbid</span>
         </div>
 
-        {/* MAIN GRID - Constrained height on desktop to prevent scrolling */}
         <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-2 md:mt-4 md:grid-cols-12 md:grid-rows-6 md:gap-3 md:h-[calc(100vh-8rem)]">
           
           <Tile className="md:col-span-5 md:row-span-6">
@@ -66,7 +64,6 @@ function Index() {
                     capturing quiet frames.
                   </h1>
                 </div>
-                {/* PROFILE PICTURE */}
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border md:h-24 md:w-24">
                   <img
                     src="/portrait.jpg"
@@ -76,7 +73,6 @@ function Index() {
                 </div>
               </div>
 
-              {/* BIO TEXT - Increased visibility */}
               <p className="max-w-md text-[13px] font-semibold leading-relaxed text-foreground/80 md:text-sm">
                 Electronics &amp; Telecommunication Engineering student at CUET. Building systems
                 and circuits, while capturing quiet frames as a passionate photographer.
@@ -125,9 +121,10 @@ function Index() {
             <CompactTile Icon={Camera} title="Photography" />
           </TileLink>
 
-          <TileLink to="/cv" className="md:col-span-2 md:row-span-3">
+          {/* UPDATED CV BUTTON - NOW AN EXTERNAL LINK */}
+          <ExternalTileLink href="YOUR_OVERLEAF_LINK_HERE" className="md:col-span-2 md:row-span-3">
             <CompactTile Icon={FileText} title="CV" />
-          </TileLink>
+          </ExternalTileLink>
         </div>
       </div>
     </div>
@@ -164,6 +161,30 @@ function TileLink({
         {children}
       </motion.div>
     </Link>
+  );
+}
+
+/* NEW EXTERNAL TILE LINK COMPONENT */
+function ExternalTileLink({
+  href,
+  children,
+  className = "",
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={`group focus-visible:outline-none ${className}`}>
+      <motion.div
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.985 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card/50 p-3 transition-colors group-hover:border-foreground/60 group-hover:bg-card/60 md:p-5"
+      >
+        {children}
+      </motion.div>
+    </a>
   );
 }
 
