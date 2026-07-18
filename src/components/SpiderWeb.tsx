@@ -19,15 +19,15 @@ const lerp = (start: number, end: number, factor: number) => {
 
 export function SpiderWeb({
   color = "#222222",
-  density = 0.0003,
+  density = 0.0004, // Increased by ~20%
   linkDistance = 140,
   nodeRadius = 1.7,
   linkAlpha = 0.35,
   nodeAlpha = 0.7,
-  mouseRadius = 240,
-  mousePull = 8, // Gentle pull towards the mouse
-  tiltStrength = 100, // How far the camera pans on tilt
-  overscan = 300, // Massive off-screen generation for 360 feel
+  mouseRadius = 300, // Larger net to grab more particles
+  mousePull = 1.5, // Strong, permanent physical pull
+  tiltStrength = 100, 
+  overscan = 300, 
   className = "",
   positionClass = "fixed",
 }: {
@@ -46,18 +46,15 @@ export function SpiderWeb({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
-  // Track mouse position
   const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
     x: -9999,
     y: -9999,
     active: false,
   });
 
-  // Target tilt (from sensors) and Current tilt (smoothed)
   const targetTilt = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const currentTilt = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Store particles persistently to prevent the "scroll shuffle"
   const particlesRef = useRef<{ x: number; y: number; vx: number; vy: number; bx: number; by: number; depth: number }[]>([]);
 
   useEffect(() => {
@@ -99,21 +96,21 @@ export function SpiderWeb({
       const fieldW = fieldMaxX - fieldMinX;
       const fieldH = fieldMaxY - fieldMinY;
 
-      // ONLY generate particles if the array is empty (initial load).
-      // This permanently fixes the scroll shuffle bug on mobile.
       if (particlesRef.current.length === 0) {
         const isMobile = window.innerWidth < 768;
-        const maxParticles = isMobile ? 60 : 120; 
-        const count = Math.max(40, Math.min(maxParticles, Math.floor(fieldW * fieldH * density)));
+        // Increased max particle limits by ~25%
+        const maxParticles = isMobile ? 75 : 150; 
+        const count = Math.max(50, Math.min(maxParticles, Math.floor(fieldW * fieldH * density)));
         
         particlesRef.current = Array.from({ length: count }, () => {
           const x = fieldMinX + Math.random() * fieldW;
           const y = fieldMinY + Math.random() * fieldH;
           return {
             x, y, bx: x, by: y,
-            vx: (Math.random() - 0.5) * 0.08, // VERY slow drift
-            vy: (Math.random() - 0.5) * 0.08,
-            depth: 0.3 + Math.random() * 0.7 // Parallax depth layer
+            // Increased base velocity by ~25%
+            vx: (Math.random() - 0.5) * 0.1, 
+            vy: (Math.random() - 0.5) * 0.1,
+            depth: 0.3 + Math.random() * 0.7 
           };
         });
       }
@@ -132,11 +129,9 @@ export function SpiderWeb({
       mouseRef.current.y = -9999;
     };
 
-    // Device Gyroscope tracking
     const onOrient = throttle((e: DeviceOrientationEvent) => {
-      const g = (e.gamma ?? 0) / 45; // Left/Right tilt
-      const b = ((e.beta ?? 0) - 45) / 45; // Forward/Back tilt
-      // Clamp values so it doesn't spin out of control
+      const g = (e.gamma ?? 0) / 45; 
+      const b = ((e.beta ?? 0) - 45) / 45; 
       targetTilt.current.x = Math.max(-1.5, Math.min(1.5, g));
       targetTilt.current.y = Math.max(-1.5, Math.min(1.5, b));
     }, 16);
@@ -145,7 +140,6 @@ export function SpiderWeb({
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
       
-      // Smooth out the gyro data
       currentTilt.current.x = lerp(currentTilt.current.x, targetTilt.current.x, 0.05);
       currentTilt.current.y = lerp(currentTilt.current.y, targetTilt.current.y, 0.05);
       
@@ -159,7 +153,35 @@ export function SpiderWeb({
       const particles = particlesRef.current;
 
       for (const p of particles) {
-        // Base slow continuous movement
+        // MOUSE INTERACTION - Physically drag the particles and alter their momentum
+        if (mouseRef.current.active && window.matchMedia("(hover: hover)").matches) {
+          const currentRenderX = p.bx + tiltX * p.depth;
+          const currentRenderY = p.by + tiltY * p.depth;
+          const dx = mx - currentRenderX;
+          const dy = my - currentRenderY;
+          const distSq = dx * dx + dy * dy;
+          const R = mouseRadius;
+          
+          if (distSq < R * R) {
+            const dist = Math.sqrt(distSq) || 1;
+            const force = (1 - dist / R) * mousePull;
+            
+            // Drag the actual base coordinates
+            p.bx += (dx / dist) * force;
+            p.by += (dy / dist) * force;
+            
+            // Inject momentum so they continue flowing in the direction of the mouse
+            p.vx += (dx / dist) * force * 0.008;
+            p.vy += (dy / dist) * force * 0.008;
+            
+            // Speed limit to prevent particles from flying off too fast
+            const maxV = 0.5;
+            p.vx = Math.max(-maxV, Math.min(maxV, p.vx));
+            p.vy = Math.max(-maxV, Math.min(maxV, p.vy));
+          }
+        }
+
+        // Base continuous movement
         p.bx += p.vx;
         p.by += p.vy;
         
@@ -169,27 +191,9 @@ export function SpiderWeb({
         if (p.by < fieldMinY) p.by += fieldH;
         else if (p.by > fieldMaxY) p.by -= fieldH;
 
-        // Apply gyro parallax (closer nodes move more)
-        let x = p.bx + tiltX * p.depth;
-        let y = p.by + tiltY * p.depth;
-
-        // Mouse pull effect
-        if (mouseRef.current.active && window.matchMedia("(hover: hover)").matches) {
-          const dx = mx - x;
-          const dy = my - y;
-          const distSq = dx * dx + dy * dy;
-          const R = mouseRadius;
-          
-          if (distSq < R * R) {
-            const dist = Math.sqrt(distSq) || 1;
-            const force = (1 - dist / R) * mousePull;
-            x += (dx / dist) * force;
-            y += (dy / dist) * force;
-          }
-        }
-        
-        p.x = x;
-        p.y = y;
+        // Apply gyro parallax
+        p.x = p.bx + tiltX * p.depth;
+        p.y = p.by + tiltY * p.depth;
       }
 
       // Filter visible nodes to optimize rendering
@@ -243,7 +247,6 @@ export function SpiderWeb({
     window.addEventListener("mousemove", onMouse);
     window.addEventListener("mouseleave", onLeave);
 
-    // Initialize Gyroscope for Mobile
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     if (isTouch) {
       const DOE = (window as any).DeviceOrientationEvent;
