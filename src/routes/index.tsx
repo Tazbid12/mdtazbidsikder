@@ -11,6 +11,7 @@ import {
   FileText,
 } from "lucide-react";
 import { SOCIALS } from "../lib/socials";
+import { client } from "../lib/sanity"; // <-- Importing your Sanity bridge
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,6 +32,15 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: "/portrait.jpg" },
     ],
   }),
+  // This loader fetches your data from Sanity before the page even loads
+  loader: async () => {
+    const overview = await client.fetch(`*[_type == "overview"][0]{
+      headline,
+      bio,
+      "profileImageUrl": profileImage.asset->url
+    }`);
+    return { overview };
+  },
   component: Index,
 });
 
@@ -41,6 +51,9 @@ const socials = [
 ];
 
 function Index() {
+  // Pulling the fetched Sanity data into your component
+  const { overview } = Route.useLoaderData();
+
   return (
     <div className="relative min-h-[calc(100svh-4rem-12px)] overflow-x-hidden flex flex-col">
       <div className="relative z-10 mx-auto flex min-h-full w-full max-w-[1400px] flex-col px-4 py-4 md:px-8 md:py-6 flex-1">
@@ -58,24 +71,25 @@ function Index() {
                   <p className="text-[10px] font-bold uppercase tracking-[0.32em] text-foreground/70">
                     Md. Tazbid Sikder
                   </p>
-                  <h1 className="mt-2 font-display font-semibold leading-[1.05] tracking-[-0.02em] text-foreground [font-size:clamp(1.2rem,2.3vw,2.4rem)]">
-                    Building systems &amp;
-                    <br />
-                    capturing quiet frames.
+                  <h1 className="mt-2 font-display font-semibold leading-[1.05] tracking-[-0.02em] text-foreground [font-size:clamp(1.2rem,2.3vw,2.4rem)] whitespace-pre-wrap">
+                    {/* Replaced hardcoded headline with Sanity data */}
+                    {overview?.headline || "Building systems &\ncapturing quiet frames."}
                   </h1>
                 </div>
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-border md:h-24 md:w-24">
                   <img
-                    src="/portrait.jpg"
+                    // Replaced hardcoded image with Sanity data
+                    src={overview?.profileImageUrl || "/portrait.jpg"}
                     alt="Md. Tazbid Sikder"
                     className="h-full w-full object-cover grayscale"
                   />
                 </div>
               </div>
 
-              <p className="max-w-md text-[13px] font-semibold leading-relaxed text-foreground/80 md:text-sm">
-                Electronics &amp; Telecommunication Engineering student at CUET. Building systems
-                and circuits, while capturing quiet frames as a passionate photographer.
+              <p className="max-w-md text-[13px] font-semibold leading-relaxed text-foreground/80 md:text-sm whitespace-pre-wrap">
+                {/* Replaced hardcoded bio with Sanity data */}
+                {overview?.bio ||
+                  "Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, while capturing quiet frames as a passionate photographer."}
               </p>
 
               <div className="mt-auto flex items-center gap-2 pt-1">
