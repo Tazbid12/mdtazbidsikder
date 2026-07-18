@@ -1,17 +1,21 @@
 import { createClient } from '@sanity/client';
 
-export const client = createClient({
-  projectId: 'jbds1kqs', // Your specific project ID from sanity.config.ts
+// We name it sanityClient here to make your skills.tsx file happy
+export const sanityClient = createClient({
+  projectId: 'jbds1kqs', 
   dataset: 'production',
   useCdn: true, 
   apiVersion: '2024-03-01',
   stega: {
     enabled: true,
-    studioUrl: '/admin', // This tells the live site where your editor lives
+    studioUrl: '/admin', 
   },
 });
 
+// We also export it as 'client' to make your index.tsx file happy!
+export const client = sanityClient;
+
 // Helper function to fetch the Overview data
 export async function getOverviewData() {
-  return client.fetch(`*[_type == "overview"][0]`);
+  return sanityClient.fetch(`*[_type == "overview"][0]`);
 }
