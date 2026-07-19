@@ -48,9 +48,10 @@ export default defineType({
       ]
     }),
     defineField({
-      name: 'date',
-      title: 'Date Published',
-      type: 'date',
+      name: 'sequence',
+      title: 'Sequence Number',
+      type: 'number',
+      description: 'Determines the order (1 appears first, 2 appears second, etc.)',
     }),
   ],
 });
