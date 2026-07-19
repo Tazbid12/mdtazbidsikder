@@ -16,7 +16,6 @@ export const Route = createFileRoute("/photography/stories")({
     ],
   }),
   loader: async () => {
-    // Ordering by sequence number
     const stories = await client.fetch(`*[_type == "photographyStory"] | order(sequence asc) {
       "id": _id,
       title,
@@ -75,10 +74,11 @@ function StoryCard({ story, index }: { story: any; index: number }) {
           className="grid grid-cols-1 md:grid-cols-12 cursor-pointer" 
           onClick={() => setIsOpen(!isOpen)}
         >
+          {/* Replaced object-cover with object-contain to prevent cropping */}
           <img
             src={story.src}
             alt={story.title}
-            className="aspect-[16/10] w-full object-cover md:col-span-5 md:aspect-auto md:h-full"
+            className="w-full h-full object-contain bg-muted/10 md:col-span-5"
           />
           <div className="p-5 md:col-span-7 md:p-6 flex flex-col justify-center">
             <h2 className="font-display text-2xl font-medium tracking-tight text-foreground">
@@ -111,13 +111,14 @@ function StoryCard({ story, index }: { story: any; index: number }) {
                   {story.description}
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                   {story.photos?.map((photo: any, i: number) => (
                     <div key={i} className="flex flex-col gap-2">
+                      {/* Removed aspect ratio and crop from inner photos */}
                       <img 
                         src={photo.src} 
                         alt={photo.caption || "Story photo"} 
-                        className="rounded-xl w-full object-cover aspect-[4/3] border border-border"
+                        className="rounded-xl w-full h-auto border border-border bg-muted/10"
                       />
                       {photo.caption && (
                         <p className="text-sm font-medium text-muted-foreground">{photo.caption}</p>
