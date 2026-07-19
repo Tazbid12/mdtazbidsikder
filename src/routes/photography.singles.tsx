@@ -14,7 +14,6 @@ export const Route = createFileRoute("/photography/singles")({
     ],
   }),
   loader: async () => {
-    // Ordering by sequence number
     const singles = await client.fetch(`*[_type == "photographySingle"] | order(sequence asc) {
       "id": _id,
       title,
@@ -45,18 +44,18 @@ function PhotographySingles() {
         </h1>
       </FadeIn>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
+      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5 items-start">
         {singles?.map((photo: any, index: number) => (
           <FadeIn key={photo.id} delay={index * 0.05}>
             <article className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md">
-              <img src={photo.src} alt={photo.title} className="aspect-[4/5] w-full object-cover" />
+              {/* Removed aspect ratio and object-cover, added w-full h-auto */}
+              <img src={photo.src} alt={photo.title} className="w-full h-auto bg-muted/10" />
               <div className="p-5">
                 <h2 className="font-display text-xl font-medium tracking-tight text-foreground">
                   {photo.title}
                 </h2>
                 <div className="mt-1 flex justify-between items-center text-sm text-muted-foreground">
                   <span>{photo.caption || ""}</span>
-                  {/* Displays the sequence number if it exists */}
                   <span>{photo.sequence ? `#${photo.sequence}` : ""}</span>
                 </div>
               </div>
