@@ -3,7 +3,7 @@ import { ArrowUpRight, Images, LibraryBig } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
 import { cardPress } from "../lib/motion";
 import { motion } from "framer-motion";
-import { client } from "../lib/sanity"; // Import your Sanity bridge
+import { client } from "../lib/sanity";
 
 export const Route = createFileRoute("/photography")({
   head: () => ({
@@ -20,15 +20,15 @@ export const Route = createFileRoute("/photography")({
       },
     ],
   }),
-  // Fetch a preview of the newest photos for the scrolling cards
   loader: async () => {
+    // Now ordering by the new 'sequence' number
     const data = await client.fetch(`{
-      "singles": *[_type == "photographySingle"] | order(date desc)[0...4] {
+      "singles": *[_type == "photographySingle"] | order(sequence asc)[0...4] {
         "id": _id,
         "src": image.asset->url,
         title
       },
-      "stories": *[_type == "photographyStory"] | order(date desc)[0...4] {
+      "stories": *[_type == "photographyStory"] | order(sequence asc)[0...4] {
         "id": _id,
         "src": coverImage.asset->url,
         title
@@ -92,7 +92,6 @@ function InteractivePreviewCard({
   Icon: typeof Images;
   items: { id: string; src: string; title: string }[];
 }) {
-  // Fallback in case your database is empty so the page doesn't crash
   const safeItems = items?.length > 0 ? items : [{ id: "fallback", src: "/portrait.jpg", title: "Upload in Admin" }];
   const marqueeItems = [...safeItems, ...safeItems, ...safeItems, ...safeItems];
 
