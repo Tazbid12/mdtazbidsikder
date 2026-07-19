@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
-import { singles } from "../lib/photography-data";
+import { client } from "../lib/sanity";
 
 export const Route = createFileRoute("/photography/singles")({
   head: () => ({
@@ -13,10 +13,23 @@ export const Route = createFileRoute("/photography/singles")({
       },
     ],
   }),
+  loader: async () => {
+    // Fetch all singles from Sanity
+    const singles = await client.fetch(`*[_type == "photographySingle"] | order(date desc) {
+      "id": _id,
+      title,
+      caption,
+      date,
+      "src": image.asset->url
+    }`);
+    return { singles };
+  },
   component: PhotographySingles,
 });
 
 function PhotographySingles() {
+  const { singles } = Route.useLoaderData();
+
   return (
     <div className="mx-auto max-w-[1400px] px-6 py-16 md:px-12">
       <FadeIn>
@@ -33,7 +46,7 @@ function PhotographySingles() {
       </FadeIn>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5">
-        {singles.map((photo, index) => (
+        {singles?.map((photo: any, index: number) => (
           <FadeIn key={photo.id} delay={index * 0.05}>
             <article className="overflow-hidden rounded-2xl border border-border bg-card/70 backdrop-blur-md">
               <img src={photo.src} alt={photo.title} className="aspect-[4/5] w-full object-cover" />
@@ -41,13 +54,19 @@ function PhotographySingles() {
                 <h2 className="font-display text-xl font-medium tracking-tight text-foreground">
                   {photo.title}
                 </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {photo.location} · {photo.year}
-                </p>
+                <div className="mt-1 flex justify-between items-center text-sm text-muted-foreground">
+                  <span>{photo.caption || "No caption"}</span>
+                  <span>{photo.date ? new Date(photo.date).getFullYear() : ""}</span>
+                </div>
               </div>
             </article>
           </FadeIn>
         ))}
+        
+        {/* Placeholder if database is empty */}
+        {singles?.length === 0 && (
+          <p className="text-muted-foreground">No photos uploaded yet. Head to your admin panel!</p>
+        )}
       </div>
     </div>
   );
