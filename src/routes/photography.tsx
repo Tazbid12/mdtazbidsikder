@@ -3,7 +3,7 @@ import { ArrowUpRight, Images, LibraryBig } from "lucide-react";
 import { FadeIn } from "../components/FadeIn";
 import { cardPress } from "../lib/motion";
 import { motion } from "framer-motion";
-import { singles, stories } from "../lib/photography-data";
+import { client } from "../lib/sanity"; // Import your Sanity bridge
 
 export const Route = createFileRoute("/photography")({
   head: () => ({
@@ -20,15 +20,30 @@ export const Route = createFileRoute("/photography")({
       },
     ],
   }),
+  // Fetch a preview of the newest photos for the scrolling cards
+  loader: async () => {
+    const data = await client.fetch(`{
+      "singles": *[_type == "photographySingle"] | order(date desc)[0...4] {
+        "id": _id,
+        "src": image.asset->url,
+        title
+      },
+      "stories": *[_type == "photographyStory"] | order(date desc)[0...4] {
+        "id": _id,
+        "src": coverImage.asset->url,
+        title
+      }
+    }`);
+    return data;
+  },
   component: Photography,
 });
 
 function Photography() {
-  // Check the current URL to see if we are on the main page or a sub-page
   const location = useLocation();
   const isMainPage = location.pathname === "/photography" || location.pathname === "/photography/";
+  const { singles, stories } = Route.useLoaderData();
 
-  // If we are on a sub-page (/singles or /stories), render that specific page instead of the menu
   if (!isMainPage) {
     return <Outlet />;
   }
@@ -77,8 +92,9 @@ function InteractivePreviewCard({
   Icon: typeof Images;
   items: { id: string; src: string; title: string }[];
 }) {
-  // Multiply the items array to ensure the auto-scroll loop is seamless on wide screens
-  const marqueeItems = [...items, ...items, ...items, ...items];
+  // Fallback in case your database is empty so the page doesn't crash
+  const safeItems = items?.length > 0 ? items : [{ id: "fallback", src: "/portrait.jpg", title: "Upload in Admin" }];
+  const marqueeItems = [...safeItems, ...safeItems, ...safeItems, ...safeItems];
 
   return (
     <FadeIn delay={0.1}>
@@ -87,7 +103,6 @@ function InteractivePreviewCard({
           {...cardPress}
           className="relative flex h-[450px] flex-col overflow-hidden rounded-3xl border border-border bg-card/70 backdrop-blur-md transition-colors group-hover:border-foreground/60"
         >
-          {/* Static Header Information */}
           <div className="relative z-10 flex items-start justify-between border-b border-border/50 bg-card/70 p-6 backdrop-blur-md md:p-8">
             <div className="flex items-center gap-4">
               <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border bg-background/50">
@@ -103,18 +118,15 @@ function InteractivePreviewCard({
             <ArrowUpRight className="h-6 w-6 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-foreground" />
           </div>
 
-          {/* Auto-Scrolling Image Marquee */}
           <div className="relative flex-1 overflow-hidden bg-background/30 py-6">
-            {/* Soft gradient fades on the left and right edges */}
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-card/80 to-transparent md:w-24" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-card/80 to-transparent md:w-24" />
 
-            {/* Scrolling Track */}
             <motion.div
               className="flex w-max items-center gap-4 px-4"
-              animate={{ x: ["0%", "-25%"] }} // Translates exactly one array length seamlessly
+              animate={{ x: ["0%", "-25%"] }} 
               transition={{
-                duration: 20, // Adjust this higher for slower scroll, lower for faster
+                duration: 20, 
                 ease: "linear",
                 repeat: Infinity,
               }}
