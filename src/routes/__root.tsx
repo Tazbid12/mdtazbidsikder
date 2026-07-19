@@ -10,6 +10,7 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence } from "framer-motion";
 import { VisualEditing } from "@sanity/visual-editing/react";
+import { client } from "../lib/sanity";
 
 import "@fontsource/space-grotesk/400.css";
 import "@fontsource/space-grotesk/500.css";
@@ -89,35 +90,49 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
-      {
-        name: "description",
-        content:
-          "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
-      },
-      { name: "author", content: "Md. Tazbid Sikder" },
-      { property: "og:title", content: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
-      {
-        property: "og:description",
-        content:
-          "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Md. Tazbid Sikder — ETE, CUET & Photographer" },
-      { name: "twitter:description", content: "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b31684f4-8beb-46d8-a643-122d7f10656b/id-preview-0134fbed--dfc81836-aa02-4ba0-b8dd-73e81a601da7.lovable.app-1783998372435.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b31684f4-8beb-46d8-a643-122d7f10656b/id-preview-0134fbed--dfc81836-aa02-4ba0-b8dd-73e81a601da7.lovable.app-1783998372435.png" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-  }),
+  // Fetch the global settings from Sanity before the app renders
+  loader: async () => {
+    const settings = await client.fetch(`*[_type == "siteSettings"][0]{
+      title,
+      "faviconUrl": favicon.asset->url
+    }`);
+    return { settings };
+  },
+  // Inject the fetched data directly into the HTML head
+  head: ({ loaderData }: any) => {
+    const favicon = loaderData?.settings?.faviconUrl || "/favicon.ico";
+    const siteTitle = loaderData?.settings?.title || "Md. Tazbid Sikder — ETE, CUET & Photographer";
+
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: siteTitle },
+        {
+          name: "description",
+          content:
+            "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
+        },
+        { name: "author", content: "Md. Tazbid Sikder" },
+        { property: "og:title", content: siteTitle },
+        {
+          property: "og:description",
+          content:
+            "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: siteTitle },
+        { name: "twitter:description", content: "Md. Tazbid Sikder — Electronics & Telecommunication Engineering student at CUET. Building systems and circuits, capturing quiet frames as a passionate photographer." },
+        { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b31684f4-8beb-46d8-a643-122d7f10656b/id-preview-0134fbed--dfc81836-aa02-4ba0-b8dd-73e81a601da7.lovable.app-1783998372435.png" },
+        { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/b31684f4-8beb-46d8-a643-122d7f10656b/id-preview-0134fbed--dfc81836-aa02-4ba0-b8dd-73e81a601da7.lovable.app-1783998372435.png" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: favicon, type: "image/x-icon" },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
