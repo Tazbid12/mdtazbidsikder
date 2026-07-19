@@ -15,7 +15,7 @@ export default defineType({
       title: 'Photo',
       type: 'image',
       options: {
-        hotspot: true, // Allows you to crop/focus the image in the admin panel
+        hotspot: true, 
       },
     }),
     defineField({
@@ -25,10 +25,10 @@ export default defineType({
       description: 'The caption displayed under the photo.',
     }),
     defineField({
-      name: 'date',
-      title: 'Date Taken',
-      type: 'date',
-      description: 'Used to sort your photos from newest to oldest.',
+      name: 'sequence',
+      title: 'Sequence Number',
+      type: 'number',
+      description: 'Determines the order (1 appears first, 2 appears second, etc.)',
     }),
   ],
 });
